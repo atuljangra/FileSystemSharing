@@ -10,13 +10,20 @@ import java.util.ArrayList;
 
 /**
  * Created by vivek on 3/18/15.
+ * Manages all asspect of the local filesystem.
  */
 public class LocalFSManager {
 
 
     private MyFile root;
 
+    private FSLogger logger;
+
     private int count;
+
+    public LocalFSManager(){
+        logger = new FSLogger();
+    }
 
     public void initializeLocalFS(){
         if(isExternalStorageWritable())
@@ -61,19 +68,12 @@ public class LocalFSManager {
     }
     private boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
     /* Checks if external storage is available to at least read */
     private boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     public void startWatching(){
@@ -149,9 +149,6 @@ public class LocalFSManager {
 
         return root;
     }
-
-
-
 
     public String serialise(){
         Gson gson = new Gson();
