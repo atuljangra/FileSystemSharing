@@ -106,11 +106,16 @@ public class LocalFSManager {
         f.name = file;
         f.path = parent.path+"/"+file;
         f.isDirectory = isdir;
+        int event = FSLogger.CREATED;
         if(isdir){
             f.dirMonitor = new LocalFSMonitor(f,LocalFSMonitor.eventFlags,this);
             f.dirMonitor.startWatching();
+            event = event | FSLogger.ISDIR;
         }
         child.add(f);
+        logger.addLog(f,event);
+        Log.d("changes ",logger.serialize(-1));
+
 
     }
     public synchronized void delete(MyFile parent,String file){
@@ -120,6 +125,8 @@ public class LocalFSManager {
         for(MyFile child:childList){
             if(child.name.equals(file)){
                 childList.remove(child);
+                logger.addLog(child,FSLogger.DELETED);
+                Log.d("changes ",logger.serialize(-1));
                 return;
             }
         }

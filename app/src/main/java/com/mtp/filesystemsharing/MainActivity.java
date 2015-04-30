@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.vivek.filesystemsharing.R;
 import com.mtp.fsmanager.FSService;
 
 
@@ -14,7 +15,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.mtp.filesystemsharing.R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         startService(new Intent(getApplicationContext(), FSService.class));
 
     }
@@ -23,7 +24,8 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(com.mtp.filesystemsharing.R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -35,7 +37,7 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == com.mtp.filesystemsharing.R.id.action_settings) {
+        if (id == R.id.action_settings) {
             return true;
         }
 

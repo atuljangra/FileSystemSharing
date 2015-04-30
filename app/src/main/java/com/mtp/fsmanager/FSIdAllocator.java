@@ -1,5 +1,6 @@
 package com.mtp.fsmanager;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -7,13 +8,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * This is the allocator of
  */
 public class FSIdAllocator {
-    private static AtomicLong fsID = new AtomicLong(0);
+    private static AtomicInteger fsID = new AtomicInteger(0);
 
-    public long getFSId(){
+    public int getFSId(){
         return fsID.get();
     }
 
-    public long incrementFSId(){
+    public int incrementFSId(){
         //Todo check for overflow and do something about it
         return fsID.incrementAndGet();
     }
