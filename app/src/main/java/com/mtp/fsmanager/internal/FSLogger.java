@@ -1,4 +1,4 @@
-package com.mtp.fsmanager;
+package com.mtp.fsmanager.internal;
 
 import com.google.gson.Gson;
 
@@ -12,9 +12,6 @@ import java.util.ArrayList;
 //TODO  The size of snapshots can grow large. Need to flush or persist.
 public class FSLogger {
 
-    public static int CREATED = 0x01;
-    public static int DELETED = 0x02;
-    public static int ISDIR = 0x04;
 
     private FSIdAllocator idAllocator;
 
@@ -31,21 +28,7 @@ public class FSLogger {
 
     }
 
-    private class Snapshot implements Serializable{
-        public int snapshot_id;
-        public ArrayList<Changes> change = new ArrayList<Changes>();
 
-    }
-
-    private class Changes implements Serializable {
-
-        public int event;
-        public String path;
-        public Changes(int event ,String path){
-            this.event = event;
-            this.path = path;
-        }
-    }
 
 
 
@@ -53,6 +36,7 @@ public class FSLogger {
 
         if(prev_snapID == idAllocator.getFSId())
             return null;
+
 
         String result = gson.toJson(fsSnapshots.subList(prev_snapID + 1, fsSnapshots.size()));
         return result;

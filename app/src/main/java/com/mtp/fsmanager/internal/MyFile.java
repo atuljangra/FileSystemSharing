@@ -1,4 +1,4 @@
-package com.mtp.fsmanager;
+package com.mtp.fsmanager.internal;
 
 import java.io.Serializable;
 import java.util.ArrayList;

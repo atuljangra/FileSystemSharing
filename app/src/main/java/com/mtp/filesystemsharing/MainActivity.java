@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.vivek.filesystemsharing.R;
-import com.mtp.fsmanager.FSService;
+import com.mtp.fsmanager.internal.FSService;
 
 
 public class MainActivity extends Activity {

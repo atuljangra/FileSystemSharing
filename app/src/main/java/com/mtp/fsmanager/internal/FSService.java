@@ -1,8 +1,7 @@
-package com.mtp.fsmanager;
+package com.mtp.fsmanager.internal;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.FileObserver;
 import android.os.IBinder;
 import android.util.Log;
 

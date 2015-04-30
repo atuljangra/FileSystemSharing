@@ -1,4 +1,4 @@
-package com.mtp.fsmanager;
+package com.mtp.fsmanager.internal;
 
 import android.os.Environment;
 import android.util.Log;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
  * Manages all asspect of the local filesystem.
  */
 public class LocalFSManager {
-
 
     private MyFile root;
 
@@ -106,17 +105,15 @@ public class LocalFSManager {
         f.name = file;
         f.path = parent.path+"/"+file;
         f.isDirectory = isdir;
-        int event = FSLogger.CREATED;
+        int event = Changes.CREATED;
         if(isdir){
             f.dirMonitor = new LocalFSMonitor(f,LocalFSMonitor.eventFlags,this);
             f.dirMonitor.startWatching();
-            event = event | FSLogger.ISDIR;
+            event = event | Changes.ISDIR;
         }
         child.add(f);
         logger.addLog(f,event);
         Log.d("changes ",logger.serialize(-1));
-
-
     }
     public synchronized void delete(MyFile parent,String file){
         ArrayList<MyFile> childList = parent.child;
@@ -125,7 +122,7 @@ public class LocalFSManager {
         for(MyFile child:childList){
             if(child.name.equals(file)){
                 childList.remove(child);
-                logger.addLog(child,FSLogger.DELETED);
+                logger.addLog(child,Changes.DELETED);
                 Log.d("changes ",logger.serialize(-1));
                 return;
             }
@@ -134,28 +131,6 @@ public class LocalFSManager {
         throw new IllegalStateException("file deleted not found in structure");
 
     }
-    private File getRoot(File child){
-        if(child.getParentFile() == null)
-            return child;
-        return getRoot(child.getParentFile());
-    }
-    private MyFile search(MyFile root, String file){
-        for(MyFile child:root.child){
-            if(child.name.equals(file)){
-                return child;
-            }
-        }
-        return null;
-    }
-    private MyFile locateFile(MyFile root, File path, String file){
-        File[] childList = path.listFiles();
-        assert childList.length < 2;
-        if(childList.length == 0){
-
-        }
-
-        return root;
-    }
 
     public String serialise(){
         Gson gson = new Gson();
@@ -163,7 +138,5 @@ public class LocalFSManager {
         Log.d("json object ", Integer.toString(result.length()));
         return result;
     }
-
-
 
 }

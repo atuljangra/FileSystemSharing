@@ -1,4 +1,4 @@
-package com.mtp.fsmanager;
+package com.mtp.fsmanager.internal;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;

@@ -19,7 +19,7 @@
         </activity>
 
         <service
-            android:name="com.mtp.fsmanager.FSService"
+            android:name="com.mtp.fsmanager.internal.FSService"
             android:enabled="true"
             android:exported="true" >
         </service>
