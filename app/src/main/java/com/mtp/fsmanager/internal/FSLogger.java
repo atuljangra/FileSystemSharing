@@ -15,11 +15,11 @@ public class FSLogger {
 
     private FSIdAllocator idAllocator;
 
-    private Gson gson ;
+    private Gson gson;
 
     private ArrayList<Snapshot> fsSnapshots = new ArrayList<Snapshot>();
 
-    public FSLogger(){
+    public FSLogger() {
         idAllocator = new FSIdAllocator();
         gson = new Gson();
         Snapshot snap = new Snapshot();
@@ -29,12 +29,9 @@ public class FSLogger {
     }
 
 
+    public String serialize(int prev_snapID) {
 
-
-
-    public String serialize(int prev_snapID){
-
-        if(prev_snapID == idAllocator.getFSId())
+        if (prev_snapID == idAllocator.getFSId())
             return null;
 
 
@@ -43,14 +40,14 @@ public class FSLogger {
     }
 
     //TODO yet to be used on client side
-    public void deserialize(String changes){
+    public void deserialize(String changes) {
 
     }
 
-    public void addLog(MyFile file,int event){
+    public void addLog(MyFile file, int event) {
         int id = idAllocator.getFSId();
         //TODO check if there are active devices. If true then "id=idAllocator.incrementFSId()"
-        Changes change = new Changes(event,file.path);
+        Changes change = new Changes(event, file.path);
         Snapshot snap = fsSnapshots.get(id);
         snap.change.add(change);
 
@@ -58,7 +55,7 @@ public class FSLogger {
 
     //TODO
     // To be called when any pull request is released
-    public void incrementID(){
+    public void incrementID() {
         idAllocator.incrementFSId();
     }
 

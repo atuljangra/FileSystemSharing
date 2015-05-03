@@ -13,7 +13,8 @@ public class Changes implements Serializable {
 
     public int event;
     public String path;
-    public Changes(int event ,String path){
+
+    public Changes(int event, String path) {
         this.event = event;
         this.path = path;
     }

@@ -19,62 +19,64 @@ import java.util.Collection;
 public class ExternalFSManager {
     Gson gson;
     MyFile root;
-    public ExternalFSManager(String fs){
+
+    public ExternalFSManager(String fs) {
         gson = new Gson();
-        root = gson.fromJson(fs,MyFile.class);
+        root = gson.fromJson(fs, MyFile.class);
     }
 
     /*Changes cannot be directly done to the root dir, so parent cannot be null*/
-    public void logChanges(String log){
-        Type collectionType = new TypeToken<Collection<Snapshot>>(){}.getType();
+    public void logChanges(String log) {
+        Type collectionType = new TypeToken<Collection<Snapshot>>() {
+        }.getType();
         ArrayList<Snapshot> fsSnapshots = gson.fromJson(log, collectionType);
-        for(Snapshot snap:fsSnapshots){
-            for(Changes cha:snap.change){
+        for (Snapshot snap : fsSnapshots) {
+            for (Changes cha : snap.change) {
                 applyChange(cha);
             }
         }
     }
 
-    private void applyChange(Changes change){
+    private void applyChange(Changes change) {
         File path = new File(change.path);
         String filename = path.getName();
-        MyFile parent = getCorrParent(path,this.root);
+        MyFile parent = getCorrParent(path, this.root);
         assert parent != null;
-        if((change.event & Changes.CREATED) > 0){
+        if ((change.event & Changes.CREATED) > 0) {
             MyFile f = new MyFile();
-            f.isDirectory = (change.event & Changes.ISDIR)>0?true:false;
+            f.isDirectory = (change.event & Changes.ISDIR) > 0 ? true : false;
             f.name = filename;
             f.path = change.path;
             parent.child.add(f);
-        }else if((change.event & Changes.DELETED) > 0){
-            MyFile child = search(parent,filename);
+        } else if ((change.event & Changes.DELETED) > 0) {
+            MyFile child = search(parent, filename);
             assert child != null;
             parent.child.remove(child);
 
-        }else{
+        } else {
             throw new IllegalArgumentException("unexpected log event");
         }
     }
 
-    private MyFile getCorrParent(File path, MyFile root){
+    private MyFile getCorrParent(File path, MyFile root) {
         File childList[] = path.listFiles();
         assert childList.length > 0;
-        if(childList[0].list().length == 0)
+        if (childList[0].list().length == 0)
             return root;
 
 
         File child = childList[0];
-        for(MyFile corrChild:root.child){
-           if(corrChild.path.equals(child.getPath())){
-               return getCorrParent(child,corrChild);
-           }
+        for (MyFile corrChild : root.child) {
+            if (corrChild.path.equals(child.getPath())) {
+                return getCorrParent(child, corrChild);
+            }
         }
         return null;//getCorrParent()
     }
 
-    private MyFile search(MyFile root, String file){
-        for(MyFile child:root.child){
-            if(child.name.equals(file)){
+    private MyFile search(MyFile root, String file) {
+        for (MyFile child : root.child) {
+            if (child.name.equals(file)) {
                 return child;
             }
         }

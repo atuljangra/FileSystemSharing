@@ -10,11 +10,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public class FSIdAllocator {
     private static AtomicInteger fsID = new AtomicInteger(0);
 
-    public int getFSId(){
+    public int getFSId() {
         return fsID.get();
     }
 
-    public int incrementFSId(){
+    public int incrementFSId() {
         //Todo check for overflow and do something about it
         return fsID.incrementAndGet();
     }

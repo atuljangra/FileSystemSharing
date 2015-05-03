@@ -15,10 +15,10 @@ public class FSService extends Service {
     }
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         localFsManager = new LocalFSManager();
         localFsManager.initializeLocalFS();
-        Log.d("FS ", localFsManager.serialise());
+        // Log.d("FS ", localFsManager.serialise());
         File sdcard = new File("/sdcard/");
 
     }
@@ -30,7 +30,7 @@ public class FSService extends Service {
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         localFsManager.stopWatching();
     }
 
