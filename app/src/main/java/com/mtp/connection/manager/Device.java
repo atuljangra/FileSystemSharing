@@ -1,5 +1,7 @@
 package com.mtp.connection.manager;
 
+import java.net.Socket;
+
 /**
  * Created by vivek on 3/5/15.
  * Maintians the details of the device in the network
@@ -8,4 +10,12 @@ package com.mtp.connection.manager;
  * If the device is my client
  */
 public class Device {
+    public String ip;
+    public Socket socket = null;
+    public boolean isSharingFS = false;
+
+    public  Device(String ip, Boolean isSharingFS){
+        this.ip = ip;
+        this.isSharingFS = isSharingFS;
+    }
 }

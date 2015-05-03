@@ -5,12 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.vivek.filesystemsharing.R;
+import com.mtp.connection.manager.DeviceManager;
+import com.mtp.connection.manager.service.discovery.GetService;
+import com.mtp.connection.manager.service.discovery.RegisterService;
+import com.mtp.connection.manager.service.discovery.ServiceSocket;
 import com.mtp.fsmanager.internal.FSService;
 
 
 public class MainActivity extends Activity {
+
+    private GetService serviceReceiver = null;
+    private RegisterService serviceBroadcaster = null;
+    private DeviceManager deviceManager = null;
+    private ServiceSocket servSocket = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,4 +53,28 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void serviceBroadcast(View view){
+        if(servSocket == null){
+            servSocket = new ServiceSocket();
+        }
+        if(serviceBroadcaster != null)
+            return;
+
+        serviceBroadcaster = new RegisterService(this, servSocket);
+        serviceBroadcaster.start();
+    }
+
+    public void getService(View view){
+        if(servSocket == null){
+            servSocket = new ServiceSocket();
+        }
+        if(serviceReceiver != null)
+            return;
+
+        deviceManager = new DeviceManager();
+        serviceReceiver = new GetService(this, servSocket, deviceManager);
+        serviceReceiver.start();
+    }
+
 }

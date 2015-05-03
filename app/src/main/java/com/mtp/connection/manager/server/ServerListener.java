@@ -1,10 +1,6 @@
 package com.mtp.connection.manager.server;
 
 import android.app.Activity;
-import android.widget.TextView;
-
-import com.example.vivek.filesystemsharing.R;
-import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.filesystemsharing.UiUpdater;
 
 import java.io.IOException;
@@ -29,11 +25,10 @@ public class ServerListener extends Thread{
 
     @Override
     public void run() {
-        try {
-            serverSocket = new ServerSocket(SocketServerPORT);
-            activity.runOnUiThread(new UiUpdater(activity,"I'm waiting here: " + serverSocket.getLocalPort()));
-
-            while (true) {
+        while (true) {
+            try {
+                serverSocket = new ServerSocket(SocketServerPORT);
+                activity.runOnUiThread(new UiUpdater(activity,"I'm waiting here: " + serverSocket.getLocalPort()));
                 Socket socket = serverSocket.accept();
                 count++;
                 String message = "#" + count + " from " + socket.getInetAddress()
@@ -46,10 +41,9 @@ public class ServerListener extends Thread{
                         socket, count,activity);
                 socketServerReplyThread.run();
 
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
