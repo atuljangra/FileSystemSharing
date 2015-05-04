@@ -30,6 +30,7 @@ public class ServerListener extends Thread{
                 serverSocket = new ServerSocket(SocketServerPORT);
                 activity.runOnUiThread(new UiUpdater(activity,"I'm waiting here: " + serverSocket.getLocalPort()));
                 Socket socket = serverSocket.accept();
+
                 count++;
                 String message = "#" + count + " from " + socket.getInetAddress()
                         + ":" + socket.getPort() + "\n";
