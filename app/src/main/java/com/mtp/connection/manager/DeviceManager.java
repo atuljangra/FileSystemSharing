@@ -1,5 +1,9 @@
 package com.mtp.connection.manager;
 
+import android.app.Activity;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+
 import java.util.ArrayList;
 
 /**
@@ -9,6 +13,20 @@ import java.util.ArrayList;
  */
 public class DeviceManager {
     private ArrayList<Device> deviceList;
+    private ArrayAdapter<Device> deviceAdaptor;
+    private Activity activity;
+
+    public DeviceManager(Activity activity){
+        this.activity = activity;
+        deviceList = new ArrayList<Device>();
+    }
+
+    public void setAdap(ArrayAdapter<Device> adap){
+        deviceAdaptor = adap;
+    }
+    public ArrayList<Device> getList(){
+        return deviceList;
+    }
 
     public synchronized void  addDevice(String ip, Boolean isSharingFS){
         for(Device dev:deviceList){
@@ -20,6 +38,12 @@ public class DeviceManager {
 
         Device dev = new Device(ip,isSharingFS);
         deviceList.add(dev);
+        // Notify the main thread.
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                deviceAdaptor.notifyDataSetChanged();
+            }
+        });
     }
 }
 

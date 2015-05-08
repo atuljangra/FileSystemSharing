@@ -6,8 +6,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.vivek.filesystemsharing.R;
+import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.DeviceManager;
 import com.mtp.connection.manager.service.discovery.GetService;
 import com.mtp.connection.manager.service.discovery.RegisterService;
@@ -21,12 +26,14 @@ public class MainActivity extends Activity {
     private RegisterService serviceBroadcaster = null;
     private DeviceManager deviceManager = null;
     private ServiceSocket servSocket = null;
+    private ArrayAdapter<Device> deviceAdaptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       // startService(new Intent(getApplicationContext(), FSService.class));
+
+        startService(new Intent(getApplicationContext(), FSService.class));
 
     }
 
@@ -72,7 +79,23 @@ public class MainActivity extends Activity {
         if(serviceReceiver != null)
             return;
 
-        deviceManager = new DeviceManager();
+        deviceManager = new DeviceManager(this);
+        deviceAdaptor = new ArrayAdapter<Device>(this, R.layout.devicelist, deviceManager.getList() );
+        deviceManager.setAdap(deviceAdaptor);
+        ListView list = (ListView)findViewById(R.id.listView);
+        list.setAdapter(deviceAdaptor);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Toast.makeText(getApplicationContext(), "Trying to connect to " +
+                        deviceManager.getList().get(position).ip, Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+
         serviceReceiver = new GetService(this, servSocket, deviceManager);
         serviceReceiver.start();
     }

@@ -18,4 +18,9 @@ public class Device {
         this.ip = ip;
         this.isSharingFS = isSharingFS;
     }
+
+    @Override
+    public String toString(){
+        return ip+": FSSharing-"+ Boolean.toString(isSharingFS);
+    }
 }
