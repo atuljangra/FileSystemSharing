@@ -1,6 +1,8 @@
 package com.mtp.connection.manager.client;
 
 import com.mtp.connection.manager.server.ServerListener;
+import com.mtp.transmission.Message;
+import com.mtp.transmission.MessageHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,22 +16,27 @@ import java.net.UnknownHostException;
  */
 //TODO create message sender
 public class ClientListener extends Thread{
-    private String serverIP;
-    private Socket socket = null;
+
     private boolean running = true;
     private String response = "";
-
-    public ClientListener(String serverIP){
-        this.serverIP = serverIP;
+    Socket socket;
+    private  MessageHandler msgHandler ;
+   /* public ClientListener(Socket socket){
+        this.socket = socket;
+        msgHandler = new MessageHandler();
     }
-
+*/
+    String serverIP;
+   public ClientListener(String ip){
+       this.serverIP = ip;
+       msgHandler = new MessageHandler();
+   }
     @Override
     public void run(){
         while(running) {
             try {
-                //TODO Need to save the Listener with the server
+                //TODO Need to save the Listener with the serve
                 socket = new Socket(serverIP, ServerListener.SocketServerPORT);
-
                 ByteArrayOutputStream byteArrayOutputStream =
                         new ByteArrayOutputStream(1024);
                 byte[] buffer = new byte[1024];
@@ -41,9 +48,21 @@ public class ClientListener extends Thread{
 				 * notice:
 				 * inputStream.read() will block if no data return
 				 */
+
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    byteArrayOutputStream.reset();
                     byteArrayOutputStream.write(buffer, 0, bytesRead);
-                    response += byteArrayOutputStream.toString("UTF-8");
+                    String packet = byteArrayOutputStream.toString("UTF-8");
+                    int end = Message.searchEOM(packet);
+                    response += packet;
+                    String txtMsg;
+                    if(end != -1){
+                        end = response.length() - packet.length() + end;
+                        txtMsg = response.substring(0, end);
+                        response = Message.getRemainingMsg(response, end);
+                        msgHandler.respond(txtMsg);
+                    }
+                    //TODO need to identify end og message.
                     //TODO Need to add message handlers.
                 }
 

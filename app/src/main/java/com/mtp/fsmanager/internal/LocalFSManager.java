@@ -39,7 +39,11 @@ public class LocalFSManager {
         root.path = file.getName();
         root.dirMonitor = new LocalFSMonitor(root, LocalFSMonitor.eventFlags, this);
         exploreStructure(root, file);
-
+        String s = this.serialise();
+        double t = s.length()/1024.0;
+        Log.d("memory",Double.toString(t)+" kB");
+        t = t/1024.0;
+        Log.d("memory",Double.toString(t)+" mB");
         Log.d("count ", Integer.toString(count));
 
 

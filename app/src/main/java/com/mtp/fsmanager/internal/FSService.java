@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.mtp.filesystemsharing.MainActivity;
+
 import java.io.File;
 
 public class FSService extends Service {
@@ -12,11 +14,12 @@ public class FSService extends Service {
     LocalFSManager localFsManager;
 
     public FSService() {
+        this.localFsManager = MainActivity.fsManager;
     }
 
     @Override
     public void onCreate() {
-        localFsManager = new LocalFSManager();
+
         localFsManager.initializeLocalFS();
         // Log.d("FS ", localFsManager.serialise());
         File sdcard = new File("/sdcard/");

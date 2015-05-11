@@ -14,10 +14,14 @@ import android.widget.Toast;
 import com.example.vivek.filesystemsharing.R;
 import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.DeviceManager;
+import com.mtp.connection.manager.client.ClientConnectionManager;
+import com.mtp.connection.manager.client.ClientListener;
+import com.mtp.connection.manager.server.ServerListener;
 import com.mtp.connection.manager.service.discovery.GetService;
 import com.mtp.connection.manager.service.discovery.RegisterService;
 import com.mtp.connection.manager.service.discovery.ServiceSocket;
 import com.mtp.fsmanager.internal.FSService;
+import com.mtp.fsmanager.internal.LocalFSManager;
 
 
 public class MainActivity extends Activity {
@@ -27,12 +31,15 @@ public class MainActivity extends Activity {
     private DeviceManager deviceManager = null;
     private ServiceSocket servSocket = null;
     private ArrayAdapter<Device> deviceAdaptor;
+    private ServerListener server;
+    public static LocalFSManager fsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fsManager = new LocalFSManager();
         startService(new Intent(getApplicationContext(), FSService.class));
 
     }
@@ -70,6 +77,9 @@ public class MainActivity extends Activity {
 
         serviceBroadcaster = new RegisterService(this, servSocket);
         serviceBroadcaster.start();
+
+        server = new ServerListener(this,fsManager);
+        server.start();
     }
 
     public void getService(View view){
@@ -80,18 +90,21 @@ public class MainActivity extends Activity {
             return;
 
         deviceManager = new DeviceManager(this);
-        deviceAdaptor = new ArrayAdapter<Device>(this, R.layout.devicelist, deviceManager.getList() );
+        deviceAdaptor = new DeviceAdaptor(this, R.layout.devicelist, deviceManager.getList() );
         deviceManager.setAdap(deviceAdaptor);
         ListView list = (ListView)findViewById(R.id.listView);
         list.setAdapter(deviceAdaptor);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                Device serv = deviceManager.getList().get(position);
                 Toast.makeText(getApplicationContext(), "Trying to connect to " +
-                        deviceManager.getList().get(position).ip, Toast.LENGTH_SHORT).show();
+                        serv.ip, Toast.LENGTH_SHORT).show();
 
+                serv.conToServer = new ClientConnectionManager(serv.ip);
+                serv.conToServer.startListening();
 
             }
         });
