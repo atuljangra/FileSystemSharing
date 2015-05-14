@@ -1,12 +1,20 @@
 package com.mtp.connection.manager.client;
 
+import android.os.*;
+import android.os.Process;
+import android.util.Log;
+
 import com.mtp.connection.manager.server.ServerListener;
-import com.mtp.transmission.Message;
+import com.mtp.filesystemsharing.MainActivity;
+import com.mtp.filesystemsharing.UiUpdater;
+import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -15,7 +23,7 @@ import java.net.UnknownHostException;
  * Listens to the incoming messages.
  */
 //TODO create message sender
-public class ClientListener extends Thread{
+public class ClientListener extends Thread {
 
     private boolean running = true;
     private String response = "";
@@ -27,16 +35,31 @@ public class ClientListener extends Thread{
     }
 */
     String serverIP;
+    private SendingHandler sendHandler;
+    private Sender senderThread;
+    OutputStream outputStream;
+
    public ClientListener(String ip){
+       super(ip);
+       setPriority(Process.THREAD_PRIORITY_BACKGROUND);
        this.serverIP = ip;
-       msgHandler = new MessageHandler();
    }
     @Override
     public void run(){
+        msgHandler = new MessageHandler();
+        senderThread = new Sender();
+        senderThread.start();
+
         while(running) {
             try {
                 //TODO Need to save the Listener with the serve
                 socket = new Socket(serverIP, ServerListener.SocketServerPORT);
+
+                /* Based on initial conf send pull request */
+                FSMessage m = new FSMessage(FSMessage.REQUESTFS,socket.getLocalAddress().getHostAddress());
+                msgHandler.respond(this,m);
+
+
                 ByteArrayOutputStream byteArrayOutputStream =
                         new ByteArrayOutputStream(1024);
                 byte[] buffer = new byte[1024];
@@ -53,14 +76,14 @@ public class ClientListener extends Thread{
                     byteArrayOutputStream.reset();
                     byteArrayOutputStream.write(buffer, 0, bytesRead);
                     String packet = byteArrayOutputStream.toString("UTF-8");
-                    int end = Message.searchEOM(packet);
+                    int end = FSMessage.searchEOM(packet);
                     response += packet;
                     String txtMsg;
                     if(end != -1){
                         end = response.length() - packet.length() + end;
                         txtMsg = response.substring(0, end);
-                        response = Message.getRemainingMsg(response, end);
-                        msgHandler.respond(txtMsg);
+                        response = FSMessage.getRemainingMsg(response, end);
+                        msgHandler.respond(this,txtMsg);
                     }
                     //TODO need to identify end og message.
                     //TODO Need to add message handlers.
@@ -85,6 +108,57 @@ public class ClientListener extends Thread{
     /* to clear the resources */
     public void kill(){
         running = false;
+        senderThread.quit();
 
     }
+
+    public void sendMsg(FSMessage msg){
+        Message m = sendHandler.obtainMessage(1,msg);
+        m.sendToTarget();
+    }
+
+    private class Sender extends HandlerThread{
+        public Sender(){
+            super("sender "+serverIP, Process.THREAD_PRIORITY_BACKGROUND);
+        }
+
+        @Override
+        protected void onLooperPrepared(){
+            super.onLooperPrepared();
+            sendHandler = new SendingHandler(getLooper());
+        }
+
+    }
+
+    private class SendingHandler extends Handler {
+        public SendingHandler(Looper looper){
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message m){
+            FSMessage msg = (FSMessage) m.obj;
+            String message = "";
+
+            try {
+                outputStream = socket.getOutputStream();
+                PrintStream printStream = new PrintStream(outputStream);
+                // send the initial filesystem
+
+
+                String msgReply = msg.serialize();
+                printStream.print(msgReply);
+
+                //printStream.close();
+                message += "replayed: " + msgReply + "\n";
+            } catch (IOException e) {
+
+                e.printStackTrace();
+                message += "Something wrong! " + e.toString() + "\n";
+            }
+           Log.d("sent by client ", message);
+
+        }
+    }
+
+
 }

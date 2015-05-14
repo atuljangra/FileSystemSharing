@@ -1,7 +1,7 @@
 package com.mtp.connection.manager.client;
 
 import com.mtp.connection.manager.server.ServerListener;
-import com.mtp.transmission.Message;
+import com.mtp.transmission.FSMessage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -31,7 +31,8 @@ public class ClientConnectionManager {
 
     }
 
-    public void sendMessage(Message msg){
+    public void sendMessage(FSMessage msg){
+        receiverThread.sendMsg(msg);
         //TODO might need to convert to asynch task
     }
 }

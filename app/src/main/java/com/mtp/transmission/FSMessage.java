@@ -4,34 +4,31 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 
-/**
- * Created by vivek on 3/5/15.
- */
-public class Message implements Serializable {
+public class FSMessage implements Serializable {
     int msgType;
     String msg;
 
 
     /* To be sent by Client 1-20*/
-    public static transient int REQUESTFS = 1;
+    final public static transient int REQUESTFS = 1;
 
     /* To be sent by Server 21+ */
-    public static transient int lOCALFS = 21;
-    public static transient int CHANGE = 22;
+    final public static transient int LOCALFS = 21;
+    final public static transient int CHANGE = 22;
 
     //TODO need to ensure that this pattern is not present in the data being sent. need to find other initialization
     /* this is to be sent with every message to mark its end */
     public static String MSGENDIDENTYFIER = "44394318";
     private static Gson gson;
 
-    public Message(String msg){
+    public FSMessage(String msg){
         gson = new Gson();
-        Message m = gson.fromJson(msg,Message.class);
+        FSMessage m = gson.fromJson(msg,FSMessage.class);
         this.msgType = m.msgType;
         this.msg = m.msg;
     }
 
-    public Message(int msgType, String msg){
+    public FSMessage(int msgType, String msg){
         this.msgType = msgType;
         this.msg = msg;
         gson = new Gson();

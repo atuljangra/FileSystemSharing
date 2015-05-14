@@ -32,6 +32,8 @@ public class MainActivity extends Activity {
     private ServiceSocket servSocket = null;
     private ArrayAdapter<Device> deviceAdaptor;
     private ServerListener server;
+
+    //TODO need to initialize it in async task and block options selection till it is done
     public static LocalFSManager fsManager;
 
     @Override
@@ -39,7 +41,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fsManager = new LocalFSManager();
         startService(new Intent(getApplicationContext(), FSService.class));
 
     }
@@ -78,7 +79,7 @@ public class MainActivity extends Activity {
         serviceBroadcaster = new RegisterService(this, servSocket);
         serviceBroadcaster.start();
 
-        server = new ServerListener(this,fsManager);
+        server = new ServerListener(this);
         server.start();
     }
 

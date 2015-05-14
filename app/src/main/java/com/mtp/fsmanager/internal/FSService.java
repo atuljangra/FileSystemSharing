@@ -13,14 +13,15 @@ public class FSService extends Service {
 
     LocalFSManager localFsManager;
 
-    public FSService() {
-        this.localFsManager = MainActivity.fsManager;
+    public FSService(){
     }
 
     @Override
     public void onCreate() {
 
-        localFsManager.initializeLocalFS();
+        localFsManager = new LocalFSManager();
+
+        MainActivity.fsManager = this.localFsManager;
         // Log.d("FS ", localFsManager.serialise());
         File sdcard = new File("/sdcard/");
 
@@ -28,6 +29,7 @@ public class FSService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        localFsManager.initializeLocalFS();
         localFsManager.startWatching();
         return START_NOT_STICKY;
     }

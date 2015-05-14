@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Created by vivek on 3/18/15.
  * Manages all asspect of the local filesystem.
  */
-public class LocalFSManager {
+public  class LocalFSManager {
 
     private MyFile root;
 
@@ -20,11 +20,13 @@ public class LocalFSManager {
 
     private int count;
 
+    private boolean initialized = false;
+
     public LocalFSManager() {
         logger = new FSLogger();
     }
 
-    public void initializeLocalFS() {
+    public synchronized void initializeLocalFS() {
         if (isExternalStorageWritable())
             Log.d("Storage state", "External Storage writable");
         else
@@ -45,8 +47,13 @@ public class LocalFSManager {
         t = t/1024.0;
         Log.d("memory",Double.toString(t)+" mB");
         Log.d("count ", Integer.toString(count));
+        initialized = true;
 
 
+    }
+
+    public synchronized Boolean isInitialized(){
+        return initialized;
     }
 
     private void exploreStructure(MyFile root, File corrRoor) {
@@ -86,7 +93,7 @@ public class LocalFSManager {
         startWatching(this.root);
     }
 
-    public void startWatching(MyFile root) {
+    private void startWatching(MyFile root) {
         root.dirMonitor.startWatching();
         for (MyFile child : root.child) {
             if (child.isDirectory) {
@@ -95,7 +102,7 @@ public class LocalFSManager {
         }
     }
 
-    public void stopWatching(MyFile root) {
+    private void stopWatching(MyFile root) {
         root.dirMonitor.stopWatching();
         for (MyFile child : root.child) {
             if (child.isDirectory) {

@@ -16,14 +16,13 @@ import java.net.Socket;
 public class ServerListener extends Thread{
     public String MyIp;
     public  static final int SocketServerPORT = 8080;
-    LocalFSManager fsManager;
+
     int count = 0;  // count of the client threads;
     ServerSocket serverSocket;
     Activity activity;
 
-    public ServerListener(Activity activity, LocalFSManager fsManager){
+    public ServerListener(Activity activity){
         this.activity = activity;
-        this.fsManager = fsManager;
 
     }
 
@@ -43,7 +42,7 @@ public class ServerListener extends Thread{
 
                 //TODO maintain this in some list
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
-                        socket, count,activity, fsManager);
+                        socket, count,activity);
                 socketServerReplyThread.run();
 
             } catch (IOException e) {

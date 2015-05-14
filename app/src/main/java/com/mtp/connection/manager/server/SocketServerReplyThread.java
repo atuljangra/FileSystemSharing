@@ -1,11 +1,14 @@
 package com.mtp.connection.manager.server;
 
 import android.app.Activity;
+import android.os.*;
+import android.os.Process;
 import android.util.Log;
 
+import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.filesystemsharing.UiUpdater;
 import com.mtp.fsmanager.internal.LocalFSManager;
-import com.mtp.transmission.Message;
+import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 
 import java.io.ByteArrayOutputStream;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -24,46 +28,34 @@ public class SocketServerReplyThread extends Thread {
     private Socket hostThreadSocket;
     int cnt;
     Activity activity;
-    LocalFSManager fsManager;
+
 
 
     private boolean running = true;
     private String response = "";
-    private MessageHandler msgHandler ;
+    private MessageHandler msgHandler;
+    private SendingHandler sendHandler;
+    private Sender senderThread;
+    OutputStream outputStream;
 
-    SocketServerReplyThread(Socket socket, int c , Activity activity, LocalFSManager fsManager) {
+
+    SocketServerReplyThread(Socket socket, int c , Activity activity) {
+        super(socket.getInetAddress().getHostName());
         hostThreadSocket = socket;
         cnt = c;
         this.activity = activity;
-        this.fsManager = fsManager;
+
     }
 
     @Override
     public void run() {
-        OutputStream outputStream;
-        String msgReply = "Hello from Android, you are #" + cnt;
-        String message ="";
-
-        //TODO modify this to output stream to seperate file
-        try {
-            outputStream = hostThreadSocket.getOutputStream();
-            PrintStream printStream = new PrintStream(outputStream);
-            // send the initial filesystem
-
-            Message msg = new Message(Message.lOCALFS,fsManager.serialise());
-            msgReply = msg.serialize();
-            printStream.print(msgReply);
-
-            //printStream.close();
-            message += "replayed: " + msgReply + "\n";
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            message += "Something wrong! " + e.toString() + "\n";
-        }
-        activity.runOnUiThread(new UiUpdater(activity, message));
 
 
+        msgHandler = new MessageHandler();
+        senderThread = new Sender();
+        senderThread.start();
+
+        /*Listening thread*/
         while(running) {
             try {
                 //TODO do something if socket gets closed
@@ -81,12 +73,12 @@ public class SocketServerReplyThread extends Thread {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     byteArrayOutputStream.write(buffer, 0, bytesRead);
                     response += byteArrayOutputStream.toString("UTF-8");
-                    int end = Message.searchEOM(response);
+                    int end = FSMessage.searchEOM(response);
                     String txtMsg;
                     if(end != -1){
                         txtMsg = response.substring(0, end);
-                        response = Message.getRemainingMsg(response, end);
-                        msgHandler.respond(txtMsg);
+                        response = FSMessage.getRemainingMsg(response, end);
+                        msgHandler.respond(this,txtMsg);
                     }
                     //TODO need to identify end og message.
                     //TODO Need to add message handlers.
@@ -114,6 +106,57 @@ public class SocketServerReplyThread extends Thread {
     public void kill(){
 
         running = false;
+        Looper.myLooper().quit();
 
     }
+
+    public void sendMsg(FSMessage msg){
+        Message m = sendHandler.obtainMessage(1,msg);
+        m.sendToTarget();
+    }
+
+    private class Sender extends HandlerThread{
+        public Sender(){
+            super("sender "+hostThreadSocket.getInetAddress().getHostName(),
+                    Process.THREAD_PRIORITY_BACKGROUND);
+        }
+
+        @Override
+        protected void onLooperPrepared(){
+            super.onLooperPrepared();
+            sendHandler = new SendingHandler(getLooper());
+        }
+
+    }
+
+    private class SendingHandler extends Handler{
+        public SendingHandler(Looper looper){
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message m){
+            FSMessage msg = (FSMessage) m.obj;
+            String message = "";
+            //TODO modify this to output stream to seperate file
+            try {
+                outputStream = hostThreadSocket.getOutputStream();
+                PrintStream printStream = new PrintStream(outputStream);
+
+
+                String msgReply = msg.serialize();
+                printStream.print(msgReply);
+
+                //printStream.close();
+                message += "replayed: " + msgReply + "\n";
+            } catch (IOException e) {
+
+                e.printStackTrace();
+                message += "Something wrong! " + e.toString() + "\n";
+            }
+            activity.runOnUiThread(new UiUpdater(activity, message));
+
+        }
+    }
+
+
 }
