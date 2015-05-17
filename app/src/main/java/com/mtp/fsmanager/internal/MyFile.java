@@ -13,9 +13,15 @@ public class MyFile implements Serializable {
     public Boolean isDirectory;
     public ArrayList<MyFile> child;
     transient LocalFSMonitor dirMonitor;
+    public transient MyFile parent;
 
-    public MyFile() {
+    public MyFile(){
         child = new ArrayList<MyFile>();
+        parent = null;
     }
 
+    public MyFile(MyFile parent){
+        child = new ArrayList<MyFile>();
+        this.parent = parent;
+    }
 }

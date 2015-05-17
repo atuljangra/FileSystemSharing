@@ -42,6 +42,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_alignTop="@+id/editText"
-        android:layout_toStartOf="@+id/button2" />
+        android:layout_toStartOf="@+id/gridview" />
+    <GridView android:id="@+id/gridview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnWidth="90dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:layout_toEndOf="@+id/button"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignTop="@+id/listView" />
 
 </RelativeLayout>

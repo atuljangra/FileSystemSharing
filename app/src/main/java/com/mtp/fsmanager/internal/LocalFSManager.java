@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public  class LocalFSManager {
 
-    private MyFile root;
+    public MyFile root;
 
     private FSLogger logger;
 
@@ -63,7 +63,7 @@ public  class LocalFSManager {
 
         for (File child : childList) {
             //Log.d("child" ,child.getName());
-            MyFile newChild = new MyFile();
+            MyFile newChild = new MyFile(root);
             newChild.name = child.getName();
             newChild.path = child.getPath();
             newChild.isDirectory = child.isDirectory();

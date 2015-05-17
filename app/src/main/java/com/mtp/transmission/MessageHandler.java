@@ -1,10 +1,13 @@
 package com.mtp.transmission;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.SocketServerReplyThread;
 import com.mtp.filesystemsharing.MainActivity;
+import com.mtp.fsmanager.external.ExternalFSManager;
 
 /**
  * Created by vivek on 3/5/15.
@@ -29,6 +32,15 @@ public class MessageHandler {
 
     }
 
+    private class ExtFS implements Runnable{
+        private ExternalFSManager extFS;
+        public ExtFS(ExternalFSManager f){
+            extFS = f;
+        }
+        public void run() {
+            MainActivity.addExternalFS(extFS);
+        }
+    }
     public void respond(ClientListener client, FSMessage msg){
 
         switch(msg.msgType){
@@ -36,7 +48,10 @@ public class MessageHandler {
                 client.sendMsg(msg);
                 break;
             case FSMessage.LOCALFS:
-                Log.d("at client","fs received");
+                Log.d("at client", "fs received");
+                ExternalFSManager extFSMan = new ExternalFSManager(msg.msg);
+                new Handler(Looper.getMainLooper()).post(new ExtFS(extFSMan));
+
                 break;
             default:
                 Log.d("message handler:"+client.getName(),"unhandled message");

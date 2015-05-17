@@ -18,7 +18,7 @@ import java.util.Collection;
  */
 public class ExternalFSManager {
     Gson gson;
-    MyFile root;
+    public MyFile root;
 
     public ExternalFSManager(String fs) {
         gson = new Gson();
