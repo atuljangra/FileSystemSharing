@@ -37,6 +37,8 @@ public class GetService extends Thread {
 
                 byte byteData[] = packet.getData();
                 String receivedIp = new String(byteData, 0, packet.getLength());
+                if(receivedIp.equals(RegisterService.getIpAddress().getHostAddress()))
+                    continue;
                 Log.d("ip received ", receivedIp);
 
                 dvManager.addDevice(receivedIp, true);

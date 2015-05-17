@@ -83,6 +83,13 @@ public class ExternalFSManager {
         return null;
     }
 
+    /* The fs received doesn't have parent node setup. so we need to establish that*/
+    public void establishRelation(MyFile child, MyFile parent){
+        child.parent = parent;
+        for(MyFile f :child.child){
+            establishRelation(f,child);
+        }
+    }
     /*private File getRoot(File child){
         if(child.getParentFile() == null)
             return child;

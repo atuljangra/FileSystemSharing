@@ -67,6 +67,9 @@ public  class LocalFSManager {
             newChild.name = child.getName();
             newChild.path = child.getPath();
             newChild.isDirectory = child.isDirectory();
+            if(!MyFile.filter(newChild))
+                continue;
+
             root.child.add(newChild);
             count++;
             if (newChild.isDirectory) {

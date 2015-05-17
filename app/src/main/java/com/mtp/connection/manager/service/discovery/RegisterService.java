@@ -63,7 +63,7 @@ public class RegisterService extends Thread {
         stop = true;
     }
 
-    private InetAddress getIpAddress() {
+    public static InetAddress getIpAddress() {
         String ip = "";
        // InetAddress t;
         try {

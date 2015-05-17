@@ -14,14 +14,28 @@ public class MyFile implements Serializable {
     public ArrayList<MyFile> child;
     transient LocalFSMonitor dirMonitor;
     public transient MyFile parent;
+    public transient int depth;
 
     public MyFile(){
         child = new ArrayList<MyFile>();
         parent = null;
+        depth = 0;
     }
 
     public MyFile(MyFile parent){
         child = new ArrayList<MyFile>();
         this.parent = parent;
+        depth = parent.depth + 1;
+    }
+
+    public static boolean filter(MyFile file){
+        if(file.depth > 1)
+            return true;
+        if(file.depth == 1){
+            if(file.name.equals("DCIM") || file.name.equals("Download"))
+                return true;
+        }
+        return false;
+
     }
 }

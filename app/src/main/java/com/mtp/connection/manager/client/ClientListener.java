@@ -5,8 +5,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.mtp.connection.manager.server.ServerListener;
-import com.mtp.filesystemsharing.MainActivity;
-import com.mtp.filesystemsharing.UiUpdater;
+
 import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 

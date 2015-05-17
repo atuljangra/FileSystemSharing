@@ -84,6 +84,7 @@ public class MainActivity extends Activity {
     }
 
     public static void addExternalFS(ExternalFSManager fs){
+        fs.establishRelation(fs.root,null);
         extFsManagers.add(fs);
         if(fileAdapter.isRoot)
             fileAdapter.add(fs.root);

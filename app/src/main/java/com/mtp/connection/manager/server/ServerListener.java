@@ -1,8 +1,8 @@
 package com.mtp.connection.manager.server;
 
 import android.app.Activity;
-import com.mtp.filesystemsharing.UiUpdater;
-import com.mtp.fsmanager.internal.LocalFSManager;
+import android.util.Log;
+
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -31,14 +31,14 @@ public class ServerListener extends Thread{
         while (true) {
             try {
                 serverSocket = new ServerSocket(SocketServerPORT);
-                activity.runOnUiThread(new UiUpdater(activity,"I'm waiting here: " + serverSocket.getLocalPort()));
+                Log.d("Server listener", "I'm waiting here: " + serverSocket.getLocalPort());
                 Socket socket = serverSocket.accept();
 
                 count++;
                 String message = "#" + count + " from " + socket.getInetAddress()
                         + ":" + socket.getPort() + "\n";
 
-                activity.runOnUiThread(new UiUpdater(activity, message));
+                Log.d("server message", message);
 
                 //TODO maintain this in some list
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(

@@ -5,9 +5,6 @@ import android.os.*;
 import android.os.Process;
 import android.util.Log;
 
-import com.mtp.filesystemsharing.MainActivity;
-import com.mtp.filesystemsharing.UiUpdater;
-import com.mtp.fsmanager.internal.LocalFSManager;
 import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 
@@ -153,7 +150,7 @@ public class SocketServerReplyThread extends Thread {
                 e.printStackTrace();
                 message += "Something wrong! " + e.toString() + "\n";
             }
-            activity.runOnUiThread(new UiUpdater(activity, message));
+            Log.d("server reply", message);
 
         }
     }
