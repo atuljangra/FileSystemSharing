@@ -33,7 +33,7 @@ public class ClientListener extends Thread {
         msgHandler = new MessageHandler();
     }
 */
-    String serverIP;
+    public String serverIP;
     private SendingHandler sendHandler;
     private Sender senderThread;
     OutputStream outputStream;
@@ -55,8 +55,8 @@ public class ClientListener extends Thread {
                 socket = new Socket(serverIP, ServerListener.SocketServerPORT);
 
                 /* Based on initial conf send pull request */
-                FSMessage m = new FSMessage(FSMessage.REQUESTFS,socket.getLocalAddress().getHostAddress());
-                msgHandler.respond(this,m);
+                FSMessage m = new FSMessage(FSMessage.REQUESTFS, socket.getLocalAddress().getHostAddress());
+                msgHandler.respond(this, m);
 
 
                 ByteArrayOutputStream byteArrayOutputStream =
@@ -78,23 +78,32 @@ public class ClientListener extends Thread {
                     int end = FSMessage.searchEOM(packet);
                     response += packet;
                     String txtMsg;
-                    if(end != -1){
+                    if (end != -1) {
                         end = response.length() - packet.length() + end;
                         txtMsg = response.substring(0, end);
                         response = FSMessage.getRemainingMsg(response, end);
-                        msgHandler.respond(this,txtMsg);
+                        msgHandler.respond(this, txtMsg);
                     }
                     //TODO need to identify end og message.
                     //TODO Need to add message handlers.
                 }
 
             } catch (UnknownHostException e) {
+                //Connection is disconnected for some reason. try to restore it
+                try {
+                    Thread.sleep(5000);
+                }catch(InterruptedException e1){
+                    e1.printStackTrace();
+                }
                 e.printStackTrace();
                 response = "UnknownHostException: " + e.toString();
             } catch (IOException e) {
                 e.printStackTrace();
                 response = "IOException: " + e.toString();
             }
+
+
+
         }
         if(socket != null){
             try {

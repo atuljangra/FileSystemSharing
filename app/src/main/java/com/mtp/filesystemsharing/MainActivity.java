@@ -3,6 +3,7 @@ package com.mtp.filesystemsharing;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,30 +34,35 @@ public class MainActivity extends Activity {
 
     private GetService serviceReceiver = null;
     private RegisterService serviceBroadcaster = null;
-    private DeviceManager deviceManager = null;
+
     private ServiceSocket servSocket = null;
     private ArrayAdapter<Device> deviceAdaptor;
     private ServerListener server;
 
     //TODO need to initialize it in async task and block options selection till it is done
     public static LocalFSManager fsManager;
-    public static ArrayList<ExternalFSManager> extFsManagers;
     public static FileAdapter fileAdapter;
+    public static DeviceManager deviceManager = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         fsManager = new LocalFSManager();
         fsManager.initializeLocalFS();
+        deviceManager = new DeviceManager(this);
+
+
         startService(new Intent(getApplicationContext(), FSService.class));
-        extFsManagers = new ArrayList<>();
 
         GridView gridView = (GridView) findViewById(R.id.gridview);
         fileAdapter = new FileAdapter(this,R.layout.grid_item,R.id.grid_text);
         fileAdapter.add(fsManager.root);
         gridView.setAdapter(fileAdapter);
-
+        servSocket = new ServiceSocket();
+        Log.d("dcim", Environment.DIRECTORY_DCIM);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -83,12 +89,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static void addExternalFS(ExternalFSManager fs){
-        fs.establishRelation(fs.root,null);
-        extFsManagers.add(fs);
-        if(fileAdapter.isRoot)
-            fileAdapter.add(fs.root);
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,9 +115,9 @@ public class MainActivity extends Activity {
     }
 
     public void serviceBroadcast(View view){
-        if(servSocket == null){
+        /*if(servSocket == null){
             servSocket = new ServiceSocket();
-        }
+        }*/
         if(serviceBroadcaster != null)
             return;
 
@@ -128,13 +129,13 @@ public class MainActivity extends Activity {
     }
 
     public void getService(View view){
-        if(servSocket == null){
+        /*if(servSocket == null){
             servSocket = new ServiceSocket();
-        }
+        }*/
         if(serviceReceiver != null)
             return;
 
-        deviceManager = new DeviceManager(this);
+
         deviceAdaptor = new DeviceAdaptor(this, R.layout.devicelist, deviceManager.getList() );
         deviceManager.setAdap(deviceAdaptor);
         ListView list = (ListView)findViewById(R.id.listView);
@@ -148,8 +149,8 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Trying to connect to " +
                         serv.ip, Toast.LENGTH_SHORT).show();
 
-                serv.conToServer = new ClientConnectionManager(serv.ip);
-                serv.conToServer.startListening();
+                serv.conToClient = new ClientConnectionManager(serv.ip);
+                serv.conToClient.startListening();
 
             }
         });

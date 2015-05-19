@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.util.Log;
 
 
+import com.mtp.filesystemsharing.MainActivity;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,6 +45,10 @@ public class ServerListener extends Thread{
                 //TODO maintain this in some list
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
                         socket, count,activity);
+
+                MainActivity.deviceManager.addConToServer(socket.getInetAddress().getHostAddress(),
+                                                            socketServerReplyThread);
+
                 socketServerReplyThread.run();
 
             } catch (IOException e) {

@@ -38,7 +38,7 @@ public class MessageHandler {
             extFS = f;
         }
         public void run() {
-            MainActivity.addExternalFS(extFS);
+            MainActivity.fileAdapter.addExternalFS(extFS);
         }
     }
     public void respond(ClientListener client, FSMessage msg){
@@ -50,6 +50,8 @@ public class MessageHandler {
             case FSMessage.LOCALFS:
                 Log.d("at client", "fs received");
                 ExternalFSManager extFSMan = new ExternalFSManager(msg.msg);
+                extFSMan.establishRelation(extFSMan.root,null);
+                MainActivity.deviceManager.addExtFS(client.serverIP, extFSMan);
                 new Handler(Looper.getMainLooper()).post(new ExtFS(extFSMan));
 
                 break;

@@ -17,6 +17,7 @@ import com.mtp.fsmanager.internal.MyFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by vivek on 3/13/15.
@@ -26,13 +27,14 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
     Context mContext;
 
     MyFile currDir;
-
+    public  ArrayList<ExternalFSManager> extFsManagers;
     public Boolean isRoot = true;
     int baseDirInd = 0;
 
     public FileAdapter(Context c, int resource, MyFile[] x){
         super(c,resource,x);
         mContext = c;
+
     }
 
     public FileAdapter(Context c, int resource){
@@ -44,10 +46,20 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
         super(c,resource, textId);
         currDir = MainActivity.fsManager.root;
         mContext = c;
+        extFsManagers = new ArrayList<>();
+
+    }
+    public synchronized  void  addExternalFS(ExternalFSManager fs){
+        extFsManagers.add(fs);
+        if(this.isRoot)
+            this.add(fs.root);
+    }
+
+    public synchronized void removeExternalFS(ExternalFSManager fs){
 
     }
 
-    public void changeDir(int position){
+    public synchronized void changeDir(int position){
         if(isRoot) {
             baseDirInd = position;
             Log.d("entering",Integer.toString(position));
@@ -58,11 +70,16 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
         if(f.isDirectory){
             currDir = f;
             clear();
-            addAll(currDir.child);
+            if(baseDirInd == 0){
+                MainActivity.fsManager.addToAdaptor(this,currDir);
+            }else{
+                extFsManagers.get(baseDirInd-1).addToAdaptor(this,currDir);
+            }
+
         }else {
             if (baseDirInd != 0) {
                 //TODO need to fecth file
-                //start and asynch task and call openfile on completion 
+                //start and asynch task and call openfile on completion
                 return;
             }
             try {
@@ -138,9 +155,7 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
             clear();
             isRoot = true;
             add(MainActivity.fsManager.root);
-            for(ExternalFSManager ex:MainActivity.extFsManagers){
-                add(ex.root);
-            }
+            MainActivity.deviceManager.addToAdaptor(this);
             return true;
         }
         currDir = currDir.parent;

@@ -5,6 +5,7 @@ import android.os.*;
 import android.os.Process;
 import android.util.Log;
 
+import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 
@@ -34,13 +35,14 @@ public class SocketServerReplyThread extends Thread {
     private SendingHandler sendHandler;
     private Sender senderThread;
     OutputStream outputStream;
-
+    String ip;
 
     SocketServerReplyThread(Socket socket, int c , Activity activity) {
         super(socket.getInetAddress().getHostName());
         hostThreadSocket = socket;
         cnt = c;
         this.activity = activity;
+        ip = socket.getInetAddress().getHostAddress();
 
     }
 
@@ -84,11 +86,15 @@ public class SocketServerReplyThread extends Thread {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
                 response = "UnknownHostException: " + e.toString();
+                //Connection terminated;
+                break;
             } catch (IOException e) {
                 e.printStackTrace();
                 response = "IOException: " + e.toString();
             }
         }
+
+        kill();
         if(hostThreadSocket != null){
             Log.d("Server reply thread ", "closing socket");
             try {
@@ -104,6 +110,7 @@ public class SocketServerReplyThread extends Thread {
 
         running = false;
         Looper.myLooper().quit();
+        MainActivity.deviceManager.removeConToServer(ip);
 
     }
 

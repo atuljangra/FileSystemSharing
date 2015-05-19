@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.mtp.filesystemsharing.FileAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -153,6 +154,9 @@ public  class LocalFSManager {
 
     }
 
+    public synchronized void addToAdaptor(FileAdapter adap, MyFile file){
+        adap.addAll(file.child);
+    }
     public String serialise() {
         Gson gson = new Gson();
         String result = gson.toJson(root);

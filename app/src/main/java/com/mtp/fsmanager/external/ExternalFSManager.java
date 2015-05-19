@@ -2,6 +2,7 @@ package com.mtp.fsmanager.external;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mtp.filesystemsharing.FileAdapter;
 import com.mtp.fsmanager.internal.Changes;
 import com.mtp.fsmanager.internal.FSLogger;
 import com.mtp.fsmanager.internal.MyFile;
@@ -26,7 +27,7 @@ public class ExternalFSManager {
     }
 
     /*Changes cannot be directly done to the root dir, so parent cannot be null*/
-    public void logChanges(String log) {
+    public synchronized void logChanges(String log) {
         Type collectionType = new TypeToken<Collection<Snapshot>>() {
         }.getType();
         ArrayList<Snapshot> fsSnapshots = gson.fromJson(log, collectionType);
@@ -89,6 +90,9 @@ public class ExternalFSManager {
         for(MyFile f :child.child){
             establishRelation(f,child);
         }
+    }
+    public synchronized void addToAdaptor(FileAdapter adap, MyFile file){
+        adap.addAll(file.child);
     }
     /*private File getRoot(File child){
         if(child.getParentFile() == null)

@@ -2,6 +2,8 @@ package com.mtp.connection.manager;
 
 import com.mtp.connection.manager.client.ClientConnectionManager;
 import com.mtp.connection.manager.client.ClientListener;
+import com.mtp.connection.manager.server.SocketServerReplyThread;
+import com.mtp.fsmanager.external.ExternalFSManager;
 
 import java.net.Socket;
 
@@ -16,8 +18,9 @@ public class Device {
     public String ip;
 
     public boolean isSharingFS = false;
-    public ClientConnectionManager conToServer =  null;
-
+    public ClientConnectionManager conToClient =  null;
+    public SocketServerReplyThread conToServer = null;
+    public ExternalFSManager extFs = null;
 
     public  Device(String ip, Boolean isSharingFS){
         this.ip = ip;
