@@ -54,6 +54,9 @@ public class SocketServerReplyThread extends Thread {
         senderThread = new Sender();
         senderThread.start();
 
+        //This is to ensure that looper has been prepared before handling messages;
+        while(senderThread.getLooper() == null){};
+
         /*Listening thread*/
         while(running) {
             try {

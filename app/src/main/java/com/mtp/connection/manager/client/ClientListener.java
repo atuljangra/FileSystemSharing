@@ -49,6 +49,9 @@ public class ClientListener extends Thread {
         senderThread = new Sender();
         senderThread.start();
 
+        //This is to ensure that looper has been prepared before handling messages;
+        while(senderThread.getLooper() == null){};
+
         while(running) {
             try {
                 //TODO Need to save the Listener with the serve
@@ -60,8 +63,8 @@ public class ClientListener extends Thread {
 
 
                 ByteArrayOutputStream byteArrayOutputStream =
-                        new ByteArrayOutputStream(1024);
-                byte[] buffer = new byte[1024];
+                        new ByteArrayOutputStream(1024*10);
+                byte[] buffer = new byte[1024*10];
 
                 int bytesRead;
                 InputStream inputStream = socket.getInputStream();
