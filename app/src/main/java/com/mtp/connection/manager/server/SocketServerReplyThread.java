@@ -7,9 +7,13 @@ import android.util.Log;
 
 import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.transmission.FSMessage;
+import com.mtp.transmission.FileTransfer;
 import com.mtp.transmission.MessageHandler;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,6 +77,7 @@ public class SocketServerReplyThread extends Thread {
              * inputStream.read() will block if no data return
              */
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    byteArrayOutputStream.reset();
                     byteArrayOutputStream.write(buffer, 0, bytesRead);
                     response += byteArrayOutputStream.toString("UTF-8");
                     int end = FSMessage.searchEOM(response);
@@ -121,6 +126,8 @@ public class SocketServerReplyThread extends Thread {
         Message m = sendHandler.obtainMessage(1,msg);
         m.sendToTarget();
     }
+
+
 
     private class Sender extends HandlerThread{
         public Sender(){

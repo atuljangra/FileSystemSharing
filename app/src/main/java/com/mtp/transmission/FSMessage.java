@@ -5,16 +5,18 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 
 public class FSMessage implements Serializable {
-    int msgType;
-    String msg;
+    public int msgType;
+    public String msg;
 
 
     /* To be sent by Client 1-20*/
     final public static transient int REQUESTFS = 1;
+    final public static transient int REQUESTFILE = 2;
 
     /* To be sent by Server 21+ */
     final public static transient int LOCALFS = 21;
     final public static transient int CHANGE = 22;
+    final public static transient int REQUESTEDFILE = 23;
 
     //TODO need to ensure that this pattern is not present in the data being sent. need to find other initialization
     /* this is to be sent with every message to mark its end */

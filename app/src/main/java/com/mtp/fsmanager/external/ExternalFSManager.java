@@ -58,6 +58,7 @@ public class ExternalFSManager {
             f.isDirectory = (change.event & Changes.ISDIR) > 0 ? true : false;
             f.name = filename;
             f.path = change.path;
+            f.parent = parent;
             parent.child.add(f);
         } else if ((change.event & Changes.DELETED) > 0) {
             MyFile child = search(parent, filename);
@@ -104,6 +105,10 @@ public class ExternalFSManager {
     /* The fs received doesn't have parent node setup. so we need to establish that*/
     public void establishRelation(MyFile child, MyFile parent){
         child.parent = parent;
+        if(parent == null)
+            child.path = "";
+        else
+            child.path = parent.path+"/"+child.name;
         for(MyFile f :child.child){
             establishRelation(f,child);
         }

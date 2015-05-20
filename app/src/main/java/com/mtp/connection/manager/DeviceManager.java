@@ -120,6 +120,16 @@ public class DeviceManager  {
         Log.e("Remove ServConn","device not found");
         return null;
     }
+
+    public Device getDevice(ExternalFSManager ext){
+        for(Device dev:deviceList){
+            if(dev.extFs == ext){
+                return dev;
+            }
+        }
+        Log.e("Remove ServConn","device not found");
+        return null;
+    }
 }
 
 

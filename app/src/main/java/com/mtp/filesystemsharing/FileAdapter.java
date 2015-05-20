@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.vivek.filesystemsharing.R;
+import com.mtp.connection.manager.Device;
 import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.fsmanager.internal.MyFile;
+import com.mtp.transmission.FSMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,17 +82,20 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
             if (baseDirInd != 0) {
                 //TODO need to fecth file
                 //start and asynch task and call openfile on completion
+                Device dev = MainActivity.deviceManager.getDevice(extFsManagers.get(baseDirInd-1));
+                FSMessage m = new FSMessage(FSMessage.REQUESTFILE, f.path);
+                dev.conToClient.sendMessage(m);
                 return;
             }
             try {
-                openFile(mContext, new File(f.path));
+                openFile(new File(f.path));
             }catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
     }
-    public static void openFile(Context context, File url) throws IOException {
+    public  void openFile( File url) throws IOException {
         // Create URI
         File file=url;
         Uri uri = Uri.fromFile(file);
@@ -144,7 +149,7 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         String s[] = {"video/*", "text/plain","image/jpeg"};
         intent.putExtra( Intent.EXTRA_MIME_TYPES,s);
-        context.startActivity(intent);
+        mContext.startActivity(intent);
     }
 
     public boolean toParent(){
