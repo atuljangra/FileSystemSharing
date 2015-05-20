@@ -164,6 +164,18 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
         return true;
     }
 
+    public void refresh(){
+        if(isRoot)
+            return;
+
+
+        clear();
+        if(baseDirInd == 0){
+            MainActivity.fsManager.addToAdaptor(this,currDir);
+        }else{
+            extFsManagers.get(baseDirInd-1).addToAdaptor(this,currDir);
+        }
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;

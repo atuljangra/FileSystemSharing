@@ -1,5 +1,7 @@
 package com.mtp.fsmanager.internal;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 /**
@@ -17,5 +19,11 @@ public class Changes implements Serializable {
     public Changes(int event, String path) {
         this.event = event;
         this.path = path;
+    }
+
+    public String serialize(){
+        Gson gson = new Gson();
+        String s = gson.toJson(this);
+        return s;
     }
 }

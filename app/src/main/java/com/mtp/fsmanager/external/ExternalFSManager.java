@@ -38,10 +38,20 @@ public class ExternalFSManager {
         }
     }
 
+    /* single change */
+    public synchronized void logChange(String c){
+        Changes ch = gson.fromJson(c, Changes.class);
+        applyChange(ch);
+    }
+
     private void applyChange(Changes change) {
-        File path = new File(change.path);
-        String filename = path.getName();
-        MyFile parent = getCorrParent(path, this.root);
+        File r = new File(change.path);
+
+        String filename = r.getName();
+
+
+
+        MyFile parent = getCorrParent(r.getParentFile());
         assert parent != null;
         if ((change.event & Changes.CREATED) > 0) {
             MyFile f = new MyFile();
@@ -59,17 +69,24 @@ public class ExternalFSManager {
         }
     }
 
-    private MyFile getCorrParent(File path, MyFile root) {
-        File childList[] = path.listFiles();
-        assert childList.length > 0;
-        if (childList[0].list().length == 0)
+    private MyFile getCorrParent(File path) {
+        if(path.getName().equals(this.root.name))
+            return root;
+
+        MyFile parent = getCorrParent(path.getParentFile());
+
+/*        File childList[] = path.listFiles();
+        if(childList ==  null)
+            return root;
+        if (childList.length == 0)
             return root;
 
 
-        File child = childList[0];
-        for (MyFile corrChild : root.child) {
-            if (corrChild.path.equals(child.getPath())) {
-                return getCorrParent(child, corrChild);
+
+        File child = childList[0];*/
+        for (MyFile corrChild : parent.child) {
+            if (corrChild.name.equals(path.getName())) {
+                return corrChild;
             }
         }
         return null;//getCorrParent()

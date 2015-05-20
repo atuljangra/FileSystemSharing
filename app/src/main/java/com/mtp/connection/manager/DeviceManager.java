@@ -5,10 +5,12 @@ import android.util.Log;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 
+import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.SocketServerReplyThread;
 import com.mtp.filesystemsharing.FileAdapter;
 import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.fsmanager.external.ExternalFSManager;
+import com.mtp.transmission.FSMessage;
 
 import java.util.ArrayList;
 
@@ -100,6 +102,23 @@ public class DeviceManager  {
             if(dev.extFs!= null)
                 adap.add(dev.extFs.root);
         }
+    }
+
+    public synchronized void sendUpdates(FSMessage msg){
+
+        for(Device dev: deviceList){
+            dev.conToServer.sendMsg(msg);
+        }
+    }
+
+    public Device getDevice(String ip){
+        for(Device dev:deviceList){
+            if(dev.ip.equals(ip)){
+                return dev;
+            }
+        }
+        Log.e("Remove ServConn","device not found");
+        return null;
     }
 }
 

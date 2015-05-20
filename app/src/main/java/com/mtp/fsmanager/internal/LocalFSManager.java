@@ -134,6 +134,8 @@ public  class LocalFSManager {
         }
         child.add(f);
         logger.addLog(f, event);
+
+
         Log.d("changes ", logger.serialize(-1));
     }
 

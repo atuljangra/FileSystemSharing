@@ -1,6 +1,8 @@
 package com.mtp.fsmanager.internal;
 
 import com.google.gson.Gson;
+import com.mtp.transmission.FSMessage;
+import com.mtp.transmission.MessageHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,9 +49,13 @@ public class FSLogger {
     public void addLog(MyFile file, int event) {
         int id = idAllocator.getFSId();
         //TODO check if there are active devices. If true then "id=idAllocator.incrementFSId()"
+        // Now there ar no active inactive devices so no need to increment
         Changes change = new Changes(event, file.path);
         Snapshot snap = fsSnapshots.get(id);
         snap.change.add(change);
+
+        MessageHandler msgHandler = new MessageHandler();
+        msgHandler.respond(new FSMessage(FSMessage.CHANGE, change.serialize()));
 
     }
 

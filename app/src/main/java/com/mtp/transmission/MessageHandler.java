@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.SocketServerReplyThread;
 import com.mtp.filesystemsharing.MainActivity;
@@ -18,7 +19,7 @@ public class MessageHandler {
 
     }
 
-    public void respond(String text){
+   /* public void respond(String text){
         if(text == null || text.length() == 0){
             Log.d("msg handler","null of empty string");
             return;
@@ -26,10 +27,15 @@ public class MessageHandler {
         Log.d("Message handler ", " responding to incoming message");
         FSMessage  msg = new FSMessage(text);
         respond(msg);
-    }
+    }*/
 
     public void respond(FSMessage msg){
+        if(msg.msgType == FSMessage.CHANGE){
+            MainActivity.deviceManager.sendUpdates(msg);
 
+        }else {
+            Log.e("msg Handler","wrong msg");
+        }
     }
 
     private class ExtFS implements Runnable{
@@ -41,7 +47,8 @@ public class MessageHandler {
             MainActivity.fileAdapter.addExternalFS(extFS);
         }
     }
-    public void respond(ClientListener client, FSMessage msg){
+
+    public  void respond(ClientListener client, FSMessage msg){
 
         switch(msg.msgType){
             case FSMessage.REQUESTFS:
@@ -54,6 +61,18 @@ public class MessageHandler {
                 MainActivity.deviceManager.addExtFS(client.serverIP, extFSMan);
                 new Handler(Looper.getMainLooper()).post(new ExtFS(extFSMan));
 
+                break;
+            case FSMessage.CHANGE:
+                Log.d("Handler", "change received");
+                Device dev = MainActivity.deviceManager.getDevice(client.serverIP);
+                assert dev != null;
+                dev.extFs.logChange(msg.msg);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.fileAdapter.refresh();
+                    }
+                });
                 break;
             default:
                 Log.d("message handler:"+client.getName(),"unhandled message");
