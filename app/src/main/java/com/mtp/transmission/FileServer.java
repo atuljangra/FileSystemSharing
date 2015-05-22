@@ -23,7 +23,7 @@ import java.net.UnknownHostException;
 /**
  * Created by vivek on 21/5/15.
  */
-public class FileServer extends AsyncTask<Void, Void, Void> {
+public class FileServer extends Thread {
 
     String dstAddress;
     int dstPort;
@@ -36,10 +36,11 @@ public class FileServer extends AsyncTask<Void, Void, Void> {
     public FileServer(String name, FileAdapter adap) {
         this.name = name;
         this.adap = adap;
+        this.setPriority(Thread.MAX_PRIORITY);
     }
 
-    @Override
-    protected Void doInBackground(Void... arg0) {
+
+    public void run() {
 
         Socket socket = null;
 
@@ -64,7 +65,17 @@ public class FileServer extends AsyncTask<Void, Void, Void> {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    adap.openFile(f);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
     void copyFile(InputStream in, FileOutputStream out){
         int len;
@@ -80,14 +91,6 @@ public class FileServer extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    @Override
-    protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
 
-        try {
-            adap.openFile(f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

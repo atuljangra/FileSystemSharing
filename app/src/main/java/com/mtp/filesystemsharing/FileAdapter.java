@@ -85,7 +85,7 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
                 //TODO need to fecth file
                 //start and asynch task and call openfile on completion
                 FileServer fileServ = new FileServer(f.name,this);
-                fileServ.execute();
+                fileServ.start();
 
                 Device dev = MainActivity.deviceManager.getDevice(extFsManagers.get(baseDirInd-1));
 
