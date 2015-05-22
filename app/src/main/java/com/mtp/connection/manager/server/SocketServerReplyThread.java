@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.transmission.FSMessage;
-import com.mtp.transmission.FileTransfer;
 import com.mtp.transmission.MessageHandler;
 
 import java.io.BufferedInputStream;
@@ -50,6 +49,9 @@ public class SocketServerReplyThread extends Thread {
 
     }
 
+    public String getIP(){
+        return hostThreadSocket.getInetAddress().getHostAddress();
+    }
     @Override
     public void run() {
 
@@ -85,7 +87,10 @@ public class SocketServerReplyThread extends Thread {
                     if(end != -1){
                         txtMsg = response.substring(0, end);
                         response = FSMessage.getRemainingMsg(response, end);
-                        msgHandler.respond(this,txtMsg);
+                        int prevPrio = this.getPriority();
+                        this.setPriority(Thread.MAX_PRIORITY);
+                        msgHandler.respond(this, txtMsg);
+                        this.setPriority(prevPrio);
                     }
                     //TODO need to identify end og message.
                     //TODO Need to add message handlers.

@@ -16,6 +16,8 @@ import com.mtp.connection.manager.Device;
 import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.fsmanager.internal.MyFile;
 import com.mtp.transmission.FSMessage;
+import com.mtp.transmission.FTServer;
+import com.mtp.transmission.FileServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +84,11 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
             if (baseDirInd != 0) {
                 //TODO need to fecth file
                 //start and asynch task and call openfile on completion
+                FileServer fileServ = new FileServer(f.name,this);
+                fileServ.execute();
+
                 Device dev = MainActivity.deviceManager.getDevice(extFsManagers.get(baseDirInd-1));
+
                 FSMessage m = new FSMessage(FSMessage.REQUESTFILE, f.path);
                 dev.conToClient.sendMessage(m);
                 return;
@@ -95,6 +101,8 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
         }
 
     }
+
+
     public  void openFile( File url) throws IOException {
         // Create URI
         File file=url;

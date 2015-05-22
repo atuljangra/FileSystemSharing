@@ -1,5 +1,7 @@
 package com.mtp.transmission;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +20,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by vivek on 3/5/15.
@@ -98,7 +104,7 @@ public class MessageHandler {
                 });
                 break;
 
-            case FSMessage.REQUESTEDFILE:
+            /*case FSMessage.REQUESTEDFILE:
                 Gson g = new Gson();
                 Log.d("file received",msg.msg);
                 FileTransfer fT = g.fromJson(msg.msg, FileTransfer.class);
@@ -114,7 +120,7 @@ public class MessageHandler {
                     e2.printStackTrace();
                 }
 
-                break;
+                break;*/
             default:
                 Log.d("message handler:"+client.getName(),"unhandled message");
         }
@@ -123,33 +129,60 @@ public class MessageHandler {
         respond(client,new FSMessage(msg));
     }
 
-    private String sendFile(FSMessage msg){
-        String path = msg.msg;
-        File file = new File(Environment.getExternalStorageDirectory(), path);
-        byte [] bytearray  = new byte [(int)file.length()];
-        ByteArrayOutputStream byteArrayOutputStream =
-                new ByteArrayOutputStream((int)file.length());
-        String s = "";
-        try{
-            FileInputStream fin = new FileInputStream(file);
-            BufferedInputStream bin = new BufferedInputStream(fin);
-            bin.read(bytearray,0,bytearray.length);
-            byteArrayOutputStream.write(bytearray, 0, bytearray.length);
-            //s = byteArrayOutputStream.toString("UTF-8");
-            s = new String(bytearray,"UTF-8");
-        }catch(IOException e){
-            e.printStackTrace();
+    private void sendFile(FSMessage msg,String ip){
+        Socket socket = null;
+        boolean connected = false;
+
+        while(!connected) {
+            try {
+                socket = new Socket(ip, 8082);
+                connected = true;
+            } catch (IOException e) {
+                try {
+                    Thread.sleep(5000);
+                }catch (InterruptedException e1){
+                    e1.printStackTrace();
+                }
+            }
         }
 
-        FileTransfer fT = new FileTransfer();
-        fT.name = file.getName();
-        fT.data = s;
-        return fT.serialize();
+        try {
 
+            OutputStream outputStream = socket.getOutputStream();
+
+            FileInputStream inputStream = null;
+            File f = new File(Environment.getExternalStorageDirectory(),msg.msg);
+            inputStream = new FileInputStream(f);
+            int len;
+            byte buf[]  = new byte[1024*1024];
+            while ((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.close();
+            inputStream.close();
+            //f = new File(Environment.getExternalStorageDirectory(),"/DCIM/t.jpg");
+
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+            if(socket != null){
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 
     public void respond(SocketServerReplyThread server, FSMessage msg){
+
         switch(msg.msgType){
             case FSMessage.REQUESTFS:
                 // send the initial filesystem
@@ -157,8 +190,8 @@ public class MessageHandler {
                 server.sendMsg(m);
                 break;
             case FSMessage.REQUESTFILE:
-                FSMessage m1 = new FSMessage(FSMessage.REQUESTEDFILE,sendFile(msg));
-                server.sendMsg(m1);
+
+                sendFile(msg,server.getIP());
                 break;
 
             default:

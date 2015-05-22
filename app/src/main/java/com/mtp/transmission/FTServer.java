@@ -5,11 +5,13 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 
 /**
- * Created by vivek on 20/5/15.
+ * Created by vivek on 21/5/15.
  */
-public class FileTransfer implements Serializable {
-    public String name;
-    public String data;
+public class FTServer implements Serializable {
+    public String ip;
+    public int port;
+    public String file;
+
     public String serialize(){
         Gson g = new Gson();
         return g.toJson(this);
