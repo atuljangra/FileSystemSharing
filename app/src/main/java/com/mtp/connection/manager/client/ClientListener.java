@@ -124,6 +124,14 @@ public class ClientListener extends Thread {
     }
 
     public void sendMsg(FSMessage msg){
+// TODO
+        /*
+        '   java.lang.NullPointerException: Attempt to invoke virtual method 'android.os.Message com.mtp.connection.manager.client.ClientListener$SendingHandler.obtainMessage(int, java.lang.Object)' on a null object reference
+            at com.mtp.connection.manager.client.ClientListener.sendMsg(ClientListener.java:127)
+            at com.mtp.transmission.MessageHandler.respond(MessageHandler.java:84)
+            at com.mtp.connection.manager.client.ClientListener.run(ClientListener.java:62)
+
+         */
         Message m = sendHandler.obtainMessage(1,msg);
         m.sendToTarget();
     }

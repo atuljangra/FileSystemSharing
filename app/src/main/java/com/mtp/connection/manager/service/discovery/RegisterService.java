@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mtp.connection.manager.DeviceManager;
 
@@ -39,6 +40,12 @@ public class RegisterService extends Thread {
     public void run(){
         DatagramSocket socket = serviceSocket.serviceSocket;
         InetAddress ip = getIpAddress();
+
+        // If IP address is NULL or we are not connected then there is no point of this.
+        if (ip == null) {
+            // TODO: Add some debug info.
+            return;
+        }
         String broadAddr = getBroadcast(ip);
         String msgToSend = ip.getHostAddress();
 
@@ -84,10 +91,10 @@ public class RegisterService extends Thread {
                 }
             }
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }
+        Log.d("getIpAddress", "null");
         return null;
     }
     public String getBroadcast(InetAddress inetAddr) {

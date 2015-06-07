@@ -10,7 +10,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * Created by vivek on 3/5/15.
+ * Get Service class. All the service discovery receipts are done here.
  */
 //TODO need to change service discovery
 public class GetService extends Thread {

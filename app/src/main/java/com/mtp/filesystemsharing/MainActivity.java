@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.vivek.filesystemsharing.R;
 import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.DeviceManager;
+import com.mtp.connection.manager.Security.Auth;
 import com.mtp.connection.manager.client.ClientConnectionManager;
 import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.ServerListener;
@@ -27,6 +28,7 @@ import com.mtp.connection.manager.service.discovery.ServiceSocket;
 import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.fsmanager.internal.FSService;
 import com.mtp.fsmanager.internal.LocalFSManager;
+
 
 import java.util.ArrayList;
 
@@ -44,7 +46,7 @@ public class MainActivity extends Activity {
     public static LocalFSManager fsManager;
     public static FileAdapter fileAdapter;
     public static DeviceManager deviceManager = null;
-
+    public static Auth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends Activity {
         fsManager = new LocalFSManager();
         fsManager.initializeLocalFS();
         deviceManager = new DeviceManager(this);
-
+        auth = new Auth(this);
 
         startService(new Intent(getApplicationContext(), FSService.class));
 
@@ -151,6 +153,8 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Trying to connect to " +
                         serv.ip, Toast.LENGTH_SHORT).show();
 
+                // TODO Add authentication here.
+               // auth.authenticate();
                 serv.conToClient = new ClientConnectionManager(serv.ip);
                 serv.conToClient.startListening();
 
