@@ -19,7 +19,7 @@ public class UiUpdater implements Runnable{
     @Override
     public void run() {
         // TODO Auto-generated method stub
-        TextView text =  (TextView) activity.findViewById(R.id.textView);
+        TextView text =  (TextView) activity.findViewById(R.id.textview);
 
         text.setText("Internet provider" + msg);
     }

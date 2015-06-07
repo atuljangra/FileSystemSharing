@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import com.example.vivek.filesystemsharing.R;
@@ -57,7 +58,7 @@ public class MainActivity extends Activity {
 
         startService(new Intent(getApplicationContext(), FSService.class));
 
-        GridView gridView = (GridView) findViewById(R.id.gridview);
+        final GridView gridView = (GridView) findViewById(R.id.gridview);
         fileAdapter = new FileAdapter(this,R.layout.grid_item,R.id.grid_text);
         fileAdapter.add(fsManager.root);
         gridView.setAdapter(fileAdapter);
@@ -72,7 +73,7 @@ public class MainActivity extends Activity {
                 intent.putExtra("id",position);
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
                 startActivity(intent);*/
-                Toast.makeText(getApplicationContext(),"jks",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Opening " + position,Toast.LENGTH_SHORT).show();
                 //f.clear();
                 fileAdapter.changeDir(position);
             }
@@ -85,7 +86,7 @@ public class MainActivity extends Activity {
         Log.d("back ", "pressed");
         if(!fileAdapter.toParent()){
 
-            Toast.makeText(getApplicationContext(),"at root",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Root Directory!",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -108,6 +109,7 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
             return true;
         }
 
