@@ -57,7 +57,7 @@ public class ExternalFSManager {
             MyFile f = new MyFile();
             f.isDirectory = (change.event & Changes.ISDIR) > 0 ? true : false;
             f.name = filename;
-            f.path = change.path;
+            f.path = parent.path+"/"+f.name;
             f.parent = parent;
             parent.child.add(f);
         } else if ((change.event & Changes.DELETED) > 0) {

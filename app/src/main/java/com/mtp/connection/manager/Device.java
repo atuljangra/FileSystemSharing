@@ -29,6 +29,6 @@ public class Device {
 
     @Override
     public String toString(){
-        return ip+": FSSharing-"+ Boolean.toString(isSharingFS);
+        return ip;
     }
 }

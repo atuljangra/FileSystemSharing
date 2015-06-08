@@ -203,7 +203,15 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
         }
         MyFile item = getItem(position);
         TextView tv = (TextView)v.findViewById(R.id.grid_text);
-        tv.setText(item.name);
+        if(isRoot & position > 0){
+            Device dev = MainActivity.deviceManager.getDevice(extFsManagers.get(position-1));
+            String name = dev.ip;
+            String s[] = name.split("\\.");
+            tv.setText(s[2]+"."+s[3]+":"+item.name);
+        }
+        else {
+            tv.setText(item.name);
+        }
 //        /tv.setHeight(10);
         // Add The Image!!!
 
