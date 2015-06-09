@@ -1,4 +1,4 @@
-package com.mtp.connection.manager.Security;
+package com.mtp.Security;
 
 /**
  * Created by atul on 6/7/15.

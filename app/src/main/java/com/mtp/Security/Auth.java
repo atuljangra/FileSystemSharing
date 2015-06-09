@@ -1,4 +1,4 @@
-package com.mtp.connection.manager.Security;
+package com.mtp.Security;
 
 import android.app.Activity;
 

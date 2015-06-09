@@ -18,19 +18,14 @@ import android.widget.Toast;
 import com.example.vivek.filesystemsharing.R;
 import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.DeviceManager;
-import com.mtp.connection.manager.Security.Auth;
+import com.mtp.Security.Auth;
 import com.mtp.connection.manager.client.ClientConnectionManager;
-import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.ServerListener;
 import com.mtp.connection.manager.service.discovery.GetService;
 import com.mtp.connection.manager.service.discovery.RegisterService;
 import com.mtp.connection.manager.service.discovery.ServiceSocket;
-import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.fsmanager.internal.FSService;
 import com.mtp.fsmanager.internal.LocalFSManager;
-
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
