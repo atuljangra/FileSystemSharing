@@ -9,6 +9,9 @@ import java.net.UnknownHostException;
 /**
  * Created by vivek on 4/5/15.
  * This is the socket initialization for sending and receiving service broadcast
+ * TODO
+ * Possible race condition here too. When I click share or get as soon as the app started, the serviceSocket is null,
+ * That results in NullPointerException in GetService:36
  */
 public class ServiceSocket {
     public DatagramSocket serviceSocket;

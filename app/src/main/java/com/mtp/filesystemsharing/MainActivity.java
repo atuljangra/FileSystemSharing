@@ -123,7 +123,7 @@ public class MainActivity extends Activity {
         serviceBroadcaster = new RegisterService(this, servSocket);
         serviceBroadcaster.start();
 
-        server = new ServerListener(this);
+        server = new ServerListener(this, auth);
         server.start();
     }
 
@@ -149,7 +149,7 @@ public class MainActivity extends Activity {
                         serv.ip, Toast.LENGTH_SHORT).show();
 
                 // TODO Add authentication here.
-               // auth.authenticate();
+                // auth.authenticate_client(serv.ip.toString());
                 serv.conToClient = new ClientConnectionManager(serv.ip);
                 serv.conToClient.startListening();
 

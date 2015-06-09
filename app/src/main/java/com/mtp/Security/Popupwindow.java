@@ -29,12 +29,18 @@ public class Popupwindow {
     EditText pass;
     Button okButton;
     String password;
+    TextView label;
     public Popupwindow (Activity activity) {
         this.activity = activity;
-        init();
     }
 
-    public void init() {
+    public void init(int server, String ipAddress) {
+        if(server == 1)
+            init_server(ipAddress);
+        else init_client(ipAddress);
+
+    }
+    public void init_client(String ipAddress) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popUpView = inflater.inflate(R.layout.popup, null, false);
 
@@ -45,7 +51,36 @@ public class Popupwindow {
 
         popUp = new PopupWindow(popUpView, width, 3 *height/4, true);
         popUp.setContentView(popUpView);
+        label = (TextView)popUpView.findViewById(R.id.label);
+        label.setText("Enter the PIN for " + ipAddress);
         pass = (EditText) popUpView.findViewById(R.id.passEntry);
+        okButton = (Button) popUpView.findViewById(R.id.okbutton);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Read the password.
+                password = pass.getText().toString();
+                Log.d("Popup", "PIN is " + password);
+                pass.setText("");
+                popUp.dismiss();
+            }
+        });
+    }
+
+    public void init_server(String ipAddress) {
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popUpView = inflater.inflate(R.layout.popup, null, false);
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int height = displaymetrics.heightPixels;
+        int width = displaymetrics.widthPixels;
+
+        popUp = new PopupWindow(popUpView, width, 3 *height/4, true);
+        popUp.setContentView(popUpView);
+
+        label = (TextView)popUpView.findViewById(R.id.label);
+        label.setText("Enter the same pin as " + ipAddress);
         okButton = (Button) popUpView.findViewById(R.id.okbutton);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override

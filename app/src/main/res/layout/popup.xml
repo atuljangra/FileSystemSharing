@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Enter the PIN"
-        android:id="@+id/textView"
+        android:id="@+id/label"
         android:autoText="false" />
 
     <EditText

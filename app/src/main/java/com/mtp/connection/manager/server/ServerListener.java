@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 
+import com.mtp.Security.Auth;
 import com.mtp.filesystemsharing.MainActivity;
 
 import java.io.IOException;
@@ -18,13 +19,14 @@ import java.net.Socket;
 public class ServerListener extends Thread{
     public String MyIp;
     public  static final int SocketServerPORT = 8080;
-
+    private Auth auth;
     int count = 0;  // count of the client threads;
     ServerSocket serverSocket;
     Activity activity;
 
-    public ServerListener(Activity activity){
+    public ServerListener(Activity activity, Auth auth){
         this.activity = activity;
+        this.auth = auth;
 
     }
 
@@ -40,7 +42,11 @@ public class ServerListener extends Thread{
                 String message = "#" + count + " from " + socket.getInetAddress()
                         + ":" + socket.getPort() + "\n";
 
-                Log.d("server message", message);
+                Log.d("server got message", message);
+
+                // TODO:
+                // Authentication should be done here. Proceed only if authenticated.
+                // auth.authenticate_server(socket.getInetAddress().toString());
 
                 //TODO maintain this in some list
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
