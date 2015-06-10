@@ -67,6 +67,7 @@ public class Popupwindow {
         });
     }
 
+    // This is called from serverThread and is executed on main UI thread. So we need a way to tranfer the data.
     public void init_server(String ipAddress) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popUpView = inflater.inflate(R.layout.popup, null, false);
@@ -81,6 +82,7 @@ public class Popupwindow {
 
         label = (TextView)popUpView.findViewById(R.id.label);
         label.setText("Enter the same pin as " + ipAddress);
+        pass = (EditText) popUpView.findViewById(R.id.passEntry);
         okButton = (Button) popUpView.findViewById(R.id.okbutton);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +96,9 @@ public class Popupwindow {
         });
     }
 
-    public int getPIN() {
+    public String getPIN() {
         popUp.showAtLocation(activity.getCurrentFocus(), Gravity.BOTTOM, 0, 0);
-        return 0;
+        return password;
     }
 }
 

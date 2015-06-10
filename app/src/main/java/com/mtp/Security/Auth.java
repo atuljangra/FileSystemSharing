@@ -1,7 +1,10 @@
 package com.mtp.Security;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.util.Log;
+
+import java.net.URL;
 
 /**
  * Idea is to add a basic authentication system.
@@ -28,15 +31,18 @@ public class Auth {
         Log.d("Auth:", "Client auth for " + ipAddress);
         pp.init(0, ipAddress);
         pp.getPIN();
-        return false;
+        return true;
     }
 
     // Auth on server side
-    public boolean authenticate_server(String ipAddress) {
+    public boolean authenticate_server(final String ipAddress, final Object token) {
+        synchronized (token) {
         Log.d("Auth:", "Server auth for " + ipAddress);
+
         pp.init(1, ipAddress);
         pp.getPIN();
-        return false;
+        token.notify();
+        return true;
+        }
     }
-
 }
