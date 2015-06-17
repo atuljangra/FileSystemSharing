@@ -17,7 +17,7 @@ public  class LocalFSManager {
 
     public MyFile root;
 
-    private FSLogger logger;
+    public FSLogger logger;
 
     private int count;
 
@@ -136,7 +136,7 @@ public  class LocalFSManager {
         logger.addLog(f, event);
 
 
-        Log.d("changes ", logger.serialize(-1));
+       // Log.d("changes ", logger.serialize(-1));
     }
 
     public synchronized void delete(MyFile parent, String file) {
@@ -147,7 +147,7 @@ public  class LocalFSManager {
             if (child.name.equals(file)) {
                 childList.remove(child);
                 logger.addLog(child, Changes.DELETED);
-                Log.d("changes ", logger.serialize(-1));
+               // Log.d("changes ", logger.serialize(-1));
                 return;
             }
         }

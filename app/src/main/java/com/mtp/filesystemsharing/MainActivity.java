@@ -26,6 +26,7 @@ import com.mtp.connection.manager.service.discovery.ServiceSocket;
 import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.fsmanager.internal.FSService;
 import com.mtp.fsmanager.internal.LocalFSManager;
+import com.mtp.transmission.FSMessage;
 
 import java.util.ArrayList;
 
@@ -89,6 +90,21 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if(deviceManager == null)
+            return;
+        deviceManager.changeToInactive(new FSMessage(FSMessage.BEINACTIVE,""));
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(deviceManager == null)
+            return;
+        deviceManager.changeToActive();
+    }
 
 
     @Override

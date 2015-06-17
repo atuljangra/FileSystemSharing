@@ -21,6 +21,7 @@ public class Device {
     public ClientConnectionManager conToClient =  null;
     public SocketServerReplyThread conToServer = null;
     public ExternalFSManager extFs = null;
+    public boolean isActive = true;
 
     public  Device(String ip, Boolean isSharingFS){
         this.ip = ip;

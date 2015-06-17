@@ -44,14 +44,14 @@ public class MessageHandler {
         respond(msg);
     }*/
 
-    public void respond(FSMessage msg){
-        if(msg.msgType == FSMessage.CHANGE){
+   /* public void respond(FSMessage msg){
+        if(msg.msgType == FSMessage.CHANGES){
             MainActivity.deviceManager.sendUpdates(msg);
 
         }else {
             Log.e("msg Handler","wrong msg");
         }
-    }
+    }*/
 
     private class ExtFS implements Runnable{
         private ExternalFSManager extFS;
@@ -91,7 +91,7 @@ public class MessageHandler {
                 new Handler(Looper.getMainLooper()).post(new ExtFS(extFSMan));
 
                 break;
-            case FSMessage.CHANGE:
+            /*case FSMessage.CHANGE:
                 Log.d("Handler", "change received");
                 Device dev = MainActivity.deviceManager.getDevice(client.serverIP);
                 assert dev != null;
@@ -102,8 +102,23 @@ public class MessageHandler {
                         MainActivity.fileAdapter.refresh();
                     }
                 });
-                break;
+                break;*/
+            case FSMessage.CHANGES:
+                //TODO handle multiple changes
+                Log.d("Handler", "change received");
+                Device dev1 = MainActivity.deviceManager.getDevice(client.serverIP);
+                assert dev1 != null;
+                if(msg.msg == null)
+                    break;
+                dev1.extFs.logChanges(msg.msg);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.fileAdapter.refresh();
+                    }
+                });
 
+                break;
             /*case FSMessage.REQUESTEDFILE:
                 Gson g = new Gson();
                 Log.d("file received",msg.msg);
@@ -193,7 +208,19 @@ public class MessageHandler {
 
                 sendFile(msg,server.getIP());
                 break;
-
+            case FSMessage.BEINACTIVE:
+                Device dev = MainActivity.deviceManager.getDevice(server.getIP());
+                dev.isActive = false;
+                //TODO change state to inactive
+                break;
+            case FSMessage.BEACTIVE:
+                //message will contain the previous id
+                Device dev2 = MainActivity.deviceManager.getDevice(server.getIP());
+                dev2.isActive = true;
+                FSMessage m1 = new FSMessage(FSMessage.CHANGES, MainActivity.fsManager.logger.serialize(Integer.valueOf(msg.msg)));
+                server.sendMsg(m1);
+                //TODO change state to active
+                break;
             default:
                 Log.d("message handler:"+server.getName(),"unhandled message");
         }
