@@ -20,6 +20,7 @@ import java.util.Collection;
 public class ExternalFSManager {
     Gson gson;
     public MyFile root;
+    public int id = -1;
 
     public ExternalFSManager(String fs) {
         gson = new Gson();
@@ -32,6 +33,7 @@ public class ExternalFSManager {
         }.getType();
         ArrayList<Snapshot> fsSnapshots = gson.fromJson(log, collectionType);
         for (Snapshot snap : fsSnapshots) {
+            id = snap.snapshot_id;
             for (Changes cha : snap.change) {
                 applyChange(cha);
             }
@@ -39,10 +41,10 @@ public class ExternalFSManager {
     }
 
     /* single change */
-    public synchronized void logChange(String c){
+   /* public synchronized void logChange(String c){
         Changes ch = gson.fromJson(c, Changes.class);
         applyChange(ch);
-    }
+    }*/
 
     private void applyChange(Changes change) {
         File r = new File(change.path);
@@ -57,7 +59,7 @@ public class ExternalFSManager {
             MyFile f = new MyFile();
             f.isDirectory = (change.event & Changes.ISDIR) > 0 ? true : false;
             f.name = filename;
-            f.path = change.path;
+            f.path = parent.path+"/"+f.name;
             f.parent = parent;
             parent.child.add(f);
         } else if ((change.event & Changes.DELETED) > 0) {

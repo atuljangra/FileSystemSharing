@@ -21,6 +21,7 @@ public class Device {
     public ClientConnectionManager conToClient =  null;
     public SocketServerReplyThread conToServer = null;
     public ExternalFSManager extFs = null;
+    public boolean isActive = true;
 
     public  Device(String ip, Boolean isSharingFS){
         this.ip = ip;
@@ -29,6 +30,6 @@ public class Device {
 
     @Override
     public String toString(){
-        return ip+": FSSharing-"+ Boolean.toString(isSharingFS);
+        return ip;
     }
 }
