@@ -1,11 +1,15 @@
 package com.mtp.fsmanager.internal;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vivek on 30/4/15.
@@ -21,6 +25,7 @@ public class FSLogger {
 
     private ArrayList<Snapshot> fsSnapshots = new ArrayList<Snapshot>();
 
+    private boolean activeInLastUpdate = false;
     public FSLogger() {
         idAllocator = new FSIdAllocator();
         gson = new Gson();
@@ -36,8 +41,9 @@ public class FSLogger {
         if (prev_snapID == idAllocator.getFSId())
             return null;
 
-
-        String result = gson.toJson(fsSnapshots.subList(prev_snapID + 1, fsSnapshots.size()));
+        List<Snapshot> l = fsSnapshots.subList(prev_snapID + 1, fsSnapshots.size());
+        String result = gson.toJson(l);
+        Log.d("logger serialization", result);
         return result;
     }
 
@@ -48,14 +54,34 @@ public class FSLogger {
 
     public void addLog(MyFile file, int event) {
         int id = idAllocator.getFSId();
-        //TODO check if there are active devices. If true then "id=idAllocator.incrementFSId()"
-        // Now there ar no active inactive devices so no need to increment
         Changes change = new Changes(event, file.path);
-        Snapshot snap = fsSnapshots.get(id);
-        snap.change.add(change);
+        if(!MainActivity.deviceManager.activeDevicesPresent()){
+            // Now there ar no active inactive devices so no need to increment
+            Snapshot snap = fsSnapshots.get(id);
+            if(activeInLastUpdate) {
+                id = idAllocator.incrementFSId();
+                snap = new Snapshot();
+                snap.snapshot_id = id;
+                fsSnapshots.add(snap);
+            }
+            activeInLastUpdate = false;
 
-        MessageHandler msgHandler = new MessageHandler();
-        msgHandler.respond(new FSMessage(FSMessage.CHANGE, change.serialize()));
+            snap.change.add(change);
+
+        }
+        else {
+
+            //TODO check if there are active devices. If true then "id=idAllocator.incrementFSId()"
+            id = idAllocator.incrementFSId();
+            activeInLastUpdate = true;
+            Snapshot snap = new Snapshot();
+            snap.snapshot_id = id;
+            fsSnapshots.add(snap);
+            snap.change.add(change);
+            MainActivity.deviceManager.sendUpdates(new FSMessage(FSMessage.CHANGES, serialize(id-1)));
+
+        }
+
 
     }
 

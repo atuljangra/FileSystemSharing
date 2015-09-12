@@ -107,7 +107,28 @@ public class DeviceManager  {
     public synchronized void sendUpdates(FSMessage msg){
 
         for(Device dev: deviceList){
-            dev.conToServer.sendMsg(msg);
+            if(dev.conToServer == null)
+                continue;
+            if(dev.isActive)
+                dev.conToServer.sendMsg(msg);
+        }
+    }
+    public synchronized void changeToInactive(FSMessage msg){
+
+        for(Device dev: deviceList){
+            if(dev.conToClient == null)
+                continue;
+
+            dev.conToClient.sendMessage(msg);
+        }
+    }
+    public synchronized void changeToActive(){
+
+        for(Device dev: deviceList){
+            if(dev.conToClient == null)
+                continue;
+            FSMessage msg = new FSMessage(FSMessage.BEACTIVE,Integer.toString(dev.extFs.id));
+            dev.conToClient.sendMessage(msg);
         }
     }
 
@@ -129,6 +150,14 @@ public class DeviceManager  {
         }
         Log.e("Remove ServConn","device not found");
         return null;
+    }
+
+    public synchronized boolean activeDevicesPresent(){
+        for(Device dev:deviceList){
+            if(dev.isActive)
+                return true;
+        }
+        return false;
     }
 }
 
