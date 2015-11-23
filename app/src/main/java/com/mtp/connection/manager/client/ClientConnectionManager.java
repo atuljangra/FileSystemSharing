@@ -1,9 +1,7 @@
 package com.mtp.connection.manager.client;
 
-import com.mtp.connection.manager.server.ServerListener;
 import com.mtp.transmission.FSMessage;
 
-import java.io.IOException;
 import java.net.Socket;
 
 /**

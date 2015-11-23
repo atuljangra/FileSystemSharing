@@ -1,10 +1,7 @@
 package com.mtp.Security;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.util.Log;
-
-import java.net.URL;
 
 /**
  * Idea is to add a basic authentication system.

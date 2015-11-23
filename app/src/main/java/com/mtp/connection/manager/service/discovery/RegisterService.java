@@ -1,13 +1,7 @@
 package com.mtp.connection.manager.service.discovery;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.DhcpInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.mtp.connection.manager.DeviceManager;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -16,7 +10,6 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 

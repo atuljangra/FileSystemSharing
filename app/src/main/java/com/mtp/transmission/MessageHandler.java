@@ -1,26 +1,19 @@
 package com.mtp.transmission;
 
-import android.content.ContentResolver;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.SocketServerReplyThread;
 import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.fsmanager.external.ExternalFSManager;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;

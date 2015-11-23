@@ -1,11 +1,8 @@
 package com.mtp.connection.manager;
 
 import com.mtp.connection.manager.client.ClientConnectionManager;
-import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.SocketServerReplyThread;
 import com.mtp.fsmanager.external.ExternalFSManager;
-
-import java.net.Socket;
 
 /**
  * Created by vivek on 3/5/15.

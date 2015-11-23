@@ -1,24 +1,17 @@
 package com.mtp.transmission;
 
-import android.content.ContentResolver;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.mtp.connection.manager.service.discovery.ServiceSocket;
 import com.mtp.filesystemsharing.FileAdapter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Created by vivek on 21/5/15.

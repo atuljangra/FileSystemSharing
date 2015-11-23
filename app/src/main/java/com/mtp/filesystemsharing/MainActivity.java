@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,13 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.provider.Settings;
 import android.widget.Toast;
 
 import com.example.vivek.filesystemsharing.R;
+import com.mtp.Security.Auth;
 import com.mtp.connection.manager.Device;
 import com.mtp.connection.manager.DeviceManager;
-import com.mtp.Security.Auth;
 import com.mtp.connection.manager.client.ClientConnectionManager;
 import com.mtp.connection.manager.server.ServerListener;
 import com.mtp.connection.manager.service.discovery.GetService;
@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
     public static FileAdapter fileAdapter;
     public static DeviceManager deviceManager = null;
     public static Auth auth;
-
+    public static final String publicName = "Public";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

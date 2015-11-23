@@ -3,7 +3,6 @@ package com.mtp.connection.manager.server;
 import android.app.Activity;
 import android.util.Log;
 
-
 import com.mtp.Security.Auth;
 import com.mtp.filesystemsharing.MainActivity;
 

@@ -2,6 +2,8 @@ package com.mtp.fsmanager.internal;
 
 import android.os.Environment;
 
+import com.mtp.filesystemsharing.MainActivity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -37,7 +39,7 @@ public class MyFile implements Serializable {
             if(file.name.equals(Environment.DIRECTORY_DCIM) || file.name.equals(Environment.DIRECTORY_DOCUMENTS)
                     || file.name.equals(Environment.DIRECTORY_DOWNLOADS) || file.name.equals(Environment.DIRECTORY_MOVIES)
                     || file.name.equals(Environment.DIRECTORY_MUSIC) || file.name.equals(Environment.DIRECTORY_PICTURES)
-                    || file.name.equals(Environment.DIRECTORY_RINGTONES))
+                    || file.name.equals(Environment.DIRECTORY_RINGTONES) || file.name.equals(MainActivity.publicName))
                 return true;
         }
         return false;

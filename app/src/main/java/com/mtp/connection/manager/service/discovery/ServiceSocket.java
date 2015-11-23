@@ -1,10 +1,7 @@
 package com.mtp.connection.manager.service.discovery;
 
-import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 /**
  * Created by vivek on 4/5/15.

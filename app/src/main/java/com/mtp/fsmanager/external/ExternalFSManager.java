@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mtp.filesystemsharing.FileAdapter;
 import com.mtp.fsmanager.internal.Changes;
-import com.mtp.fsmanager.internal.FSLogger;
 import com.mtp.fsmanager.internal.MyFile;
 import com.mtp.fsmanager.internal.Snapshot;
 

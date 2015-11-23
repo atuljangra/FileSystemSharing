@@ -2,13 +2,10 @@ package com.mtp.connection.manager;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 
-import com.mtp.connection.manager.client.ClientListener;
 import com.mtp.connection.manager.server.SocketServerReplyThread;
 import com.mtp.filesystemsharing.FileAdapter;
-import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.transmission.FSMessage;
 

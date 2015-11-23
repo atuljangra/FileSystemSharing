@@ -1,11 +1,13 @@
 package com.mtp.connection.manager.client;
 
-import android.os.*;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 
 import com.mtp.connection.manager.server.ServerListener;
-
 import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 

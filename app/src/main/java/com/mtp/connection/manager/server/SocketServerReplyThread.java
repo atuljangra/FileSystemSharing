@@ -1,7 +1,10 @@
 package com.mtp.connection.manager.server;
 
 import android.app.Activity;
-import android.os.*;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 
@@ -9,15 +12,11 @@ import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.transmission.FSMessage;
 import com.mtp.transmission.MessageHandler;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.Socket;
 import java.net.UnknownHostException;
 

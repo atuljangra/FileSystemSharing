@@ -2,12 +2,13 @@ package com.mtp.connection.manager.service.discovery;
 
 import android.app.Activity;
 import android.util.Log;
+
 import com.mtp.connection.manager.DeviceManager;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 /**
  * Get Service class. All the service discovery receipts are done here.

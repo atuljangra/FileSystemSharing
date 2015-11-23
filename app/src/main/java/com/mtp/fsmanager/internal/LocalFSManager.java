@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mtp.filesystemsharing.FileAdapter;
+import com.mtp.filesystemsharing.MainActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,12 +36,19 @@ public  class LocalFSManager {
 
         File file = Environment.getExternalStorageDirectory();
         Log.d("root", file.getName());
+        File directory = new File(Environment.getExternalStorageDirectory() + File.separator+ MainActivity.publicName);
+        boolean result = directory.mkdirs();
+        Log.d("Public ", directory.getAbsolutePath());
+        Log.d("Public created?", result+"");
         count = 0;
         root = new MyFile();
         root.isDirectory = true;
         root.name = file.getName();
+
         root.path = file.getName();
         root.dirMonitor = new LocalFSMonitor(root, LocalFSMonitor.eventFlags, this);
+
+
         exploreStructure(root, file);
         String s = this.serialise();
         double t = s.length()/1024.0;
@@ -63,7 +71,7 @@ public  class LocalFSManager {
             return;
 
         for (File child : childList) {
-            //Log.d("child" ,child.getName());
+            Log.d("child" ,child.getName());
             MyFile newChild = new MyFile(root);
             newChild.name = child.getName();
             newChild.path = child.getPath();

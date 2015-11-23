@@ -16,7 +16,6 @@ import com.mtp.connection.manager.Device;
 import com.mtp.fsmanager.external.ExternalFSManager;
 import com.mtp.fsmanager.internal.MyFile;
 import com.mtp.transmission.FSMessage;
-import com.mtp.transmission.FTServer;
 import com.mtp.transmission.FileServer;
 
 import java.io.File;
@@ -49,6 +48,7 @@ public class FileAdapter extends ArrayAdapter<MyFile> {
     public FileAdapter(Context c, int resource, int textId){
         super(c,resource, textId);
         currDir = MainActivity.fsManager.root;
+
         mContext = c;
         extFsManagers = new ArrayList<>();
 

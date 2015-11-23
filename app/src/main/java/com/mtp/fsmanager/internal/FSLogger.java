@@ -5,9 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.mtp.filesystemsharing.MainActivity;
 import com.mtp.transmission.FSMessage;
-import com.mtp.transmission.MessageHandler;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
